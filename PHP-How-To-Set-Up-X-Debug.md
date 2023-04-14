@@ -2,12 +2,7 @@
 
 install the Xdebug extension compatible with your PHP version. Check which version of Xdebug you need by visiting the Xdebug website's compatibility chart: [https://xdebug.org/docs/compat](https://xdebug.org/docs/compat)
 
-a. Open Terminal and find the correct `phpize` for your MAMP installation by running:
-```bash
-/Applications/MAMP/bin/php/php8.2.0/bin/phpize -v
-```
-
-b. Download and extract the Xdebug source code:
+a. Download and extract the Xdebug source code:
 ```bash
 cd ~/Downloads
 curl -OL https://xdebug.org/files/xdebug-x.x.x.tgz
@@ -17,13 +12,13 @@ cd xdebug-x.x.x
 
 Replace "x.x.x" with the appropriate Xdebug version number.
 
-c. Prepare Xdebug for MAMP's PHP:
+b. Prepare Xdebug for MAMP's PHP:
 
 ```bash
-/Applications/MAMP/bin/php/php8.2.0/bin/phpize
+/Applications/MAMP/bin/php/php8.2.0/bin/phpize # the version number of PHP will depend on what you are using for MAMP
 ```
 
-d. Configure, build, and install Xdebug:
+c. Configure, build, and install Xdebug:
 ```bash
 ./configure --with-php-config=/Applications/MAMP/bin/php/php8.2.0/bin/php-config
 make
@@ -87,4 +82,4 @@ d. In the `launch.json` file, add the following configuration:
 
 ```
 
-Adjust the `pathMappings` value to match your local setup if necessary.
+Adjust the `pathMappings` value to match your local setup if necessary. If you have a project open in VS Code, launch a terminal window inside your IDE then use the `pwd` command to get the current working directory. Replace `//Applications/MAMP/htdocs` with the output from `pwd` and you should be good to go.
