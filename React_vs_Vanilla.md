@@ -1,10 +1,4 @@
 
-Using Hooks, methods commonly seen in react
-- useState and useEffect
-javascript vs react 
-- setting up an onClick the old way vs React
-- help bridge vanilla JS knowledge into React 
-- using debugger with react 
 
 
 On click event listener
