@@ -10,6 +10,14 @@ If you don't have a `globals.js` file, create one in your `src` folder. Then, ad
 export const APP_FOLDER_NAME = "movie-mania";
 ```
 
+or if you already have other global variables defined, add the following line to it:
+
+```js
+const APP_FOLDER_NAME = "movie-mania";
+const OTHER_GLOBAL = "other-global";
+export { APP_FOLDER_NAME, OTHER_GLOBAL}
+```
+
 ## Step 2: Add the basename attribute to BrowserRouter
 Modify the BrowserRouter in your App.js file (or wherever your router is defined) to include a basename attribute, like so:
 
