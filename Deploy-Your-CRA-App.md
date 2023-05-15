@@ -66,5 +66,5 @@ After following these steps, your React application should be ready for deployme
 
 - Running `npm run build` will create a build folder with a production build of your app.
 - Rename the build folder to the name of the homepage attribute in your package.json file.
-- Upload the contents of the build folder to your server via FTP.
+- Upload the contents of the renamed build folder to your server via FTP.
 
