@@ -31,7 +31,7 @@ Create a file called `.htaccess` in the root of your project. What we need it to
 
 ### Step 2: Add the following code to your .htaccess file
 
-```
+```sh
 Options -MultiViews
 # We disable MultiViews
 RewriteEngine On
