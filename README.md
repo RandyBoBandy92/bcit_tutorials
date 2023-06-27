@@ -2,6 +2,8 @@
 
 ## React
 
+[React Router and .htaccess - How it works](./React-Router-and-htaccess.md)
+
 [Deploy Your CRA App on a SUBDIRECTORY](./Deploy-Your-CRA-App.md)
 
 [Deploy Your Vite App on a SUBDIRECTORY](./Deploy-Your-Vite-App.md)
