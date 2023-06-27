@@ -13,7 +13,7 @@ Everything seems to be working in development, so you build and upload it to you
 
 ## What's going on?
 
-So, here is what happens when things are working (When you do a hard refresh or access your home page for the first time):
+So, here is what happens when things are **working** (When you do a hard refresh or access your home page for the first time):
 
 ![](/assets/images/BCIT%20FWD33%20Portfolio%202023-06-27%2015.46.58.excalidraw.png)
 
@@ -21,7 +21,7 @@ So far, so good. But when you are on a route and you do a hard refresh, this is 
 
 ![](assets/images/request404.png)
 
-So the server is looking for a folder called 'projects' in your server, which doesn't exist. Because the server doesn't understand that the routing is meant to be handled by JavaScript in your React application.
+So the server is looking for a folder called 'projects' in your server, which doesn't exist. Because the server doesn't understand that the routing is meant to be handled by **JavaScript in your React application.**
 
 ## How to fix it?
 
