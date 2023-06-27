@@ -1,3 +1,5 @@
+## Web Server's don't understand React Router
+
 So, say you have a react SPA (Single Page Application) that uses React Router. You have the following routes:
 
 
@@ -7,7 +9,7 @@ So, say you have a react SPA (Single Page Application) that uses React Router. Y
 4. `/about`
 5. `/contact`
 
-Everything seems to be working fine in development, so you build and upload it to your FTP site. Everything seems to be working fine, except for the routes. You can access the home page, but when your browser is already on a route and you do a full refresh, you get a 404 error.
+Everything seems to be working in development, so you build and upload it to your FTP site. It is working fine there too, except for the routes. You can access the home page, but when your browser is already on a route and you do a full refresh, you get a 404 error.
 
 ## What's going on?
 
