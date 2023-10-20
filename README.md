@@ -1,5 +1,8 @@
 # Tutorials
 
+## IDE VS Code Stuff
+[How To Set Up Prettier](./How-To-Setup-Prettier.md)
+
 ## React
 
 [React Router and .htaccess - How it works](./React-Router-and-htaccess.md)
