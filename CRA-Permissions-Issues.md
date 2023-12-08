@@ -44,6 +44,12 @@ You can find your username by running the command `whoami` in the terminal.
 whoami
 ```
 
-## I'm on windows, what do I do?
+## File not found while running create-react-app
 
-If you are on windows, you can right click on the project folder, go to properties, then security, then advanced, then change the owner to your user.
+![](assets/images/cra-no-such-file.png)
+
+Solution here was to reinstall npm.
+
+```bash
+npm install -g npm
+```
