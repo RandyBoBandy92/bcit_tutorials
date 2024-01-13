@@ -2,6 +2,9 @@
 
 install the Xdebug extension compatible with your PHP version. Check which version of Xdebug you need by visiting the Xdebug website's compatibility chart: [https://xdebug.org/docs/compat](https://xdebug.org/docs/compat)
 
+
+You can visit [https://xdebug.org/wizard](https://xdebug.org/wizard) and paste your phpinfo() output to get a list of the Xdebug versions that are compatible with your PHP version.
+
 a. Download and extract the Xdebug source code:
 ```bash
 cd ~/Downloads
