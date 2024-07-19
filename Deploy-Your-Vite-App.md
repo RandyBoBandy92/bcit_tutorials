@@ -62,5 +62,4 @@ After following these steps, your React application should be ready for deployme
 ## Step 5: Deploying to siteground via FTP
 
 - Running `npm run build` will create a build folder with a production build of your app.
-- Rename the build folder to the name of the homepage attribute in your package.json file.
-- Upload the contents of the renamed build folder to your server via FTP.
+- Upload the contents of the build folder to your server via FTP. (double check that the folder name is an exact match of the `base` and `basename` variables you defined previously.

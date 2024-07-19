@@ -27,7 +27,7 @@ So the server is looking for a folder called 'projects' in your server, which do
 
 ### Step 1: Create a .htaccess file
 
-Create a file called `.htaccess` in the root of your project. What we need it to do is give special instructions to our server on how to handle requests.
+Create a file called `.htaccess` in the `/public` folder of your project. What we need it to do is give special instructions to our server on how to handle requests.
 
 ### Step 2: Add the following code to your .htaccess file
 
