@@ -18,3 +18,5 @@ Using `ls` can help you stay oriented and figure out where you want to go next. 
 So if you want to go up to the parent directory of wherever you are. You would type `cd ..` to go back one directory. You can path into multiple folders at a time if you want. 
 
 Knowing the location of your terminal is very important, as it can help you avoid common pitfalls like accidentally installing a git repo in your C: drive, or setting up projects / installing packages where you aren't intending to. 
+
+This is why using the integrated terminal, as I recommended [here](./Crash-Course-Make-Vite-Project.md) from VS Code helps, as it automatically opens the folder from your workspace as the "working directory" making `cd` commands unnecessary.
