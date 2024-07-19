@@ -13,7 +13,7 @@ A "Working Directory" is the location your terminal is currently pointing at. To
 
 ![](../assets/images/pwd_command.png)
 
-Using `ls` can help you stay oriented and figure out where you want to go next. The `cd` command allows you to change directories. Thankfully, the knowledge you've gained about absolute paths and relative paths are 100% transferrable to your skills here on the terminal. 
+Using `ls` can help you stay oriented and figure out where you want to go next. The `cd` command allows you to change directories. Thankfully, the knowledge you've gained about absolute paths and relative paths are 100% transferable to your skills here on the terminal. 
 
 So if you want to go up to the parent directory of wherever you are. You would type `cd ..` to go back one directory. You can path into multiple folders at a time if you want. 
 
