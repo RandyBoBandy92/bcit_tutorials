@@ -1,6 +1,7 @@
 # Tutorials
 
 ## Terminal Guides
+[Step 0 Understanding Your Terminal](./terminal/Step-0-Understanding-Terminal.md)
 [Crash Course Using Terminal to Make Vite Project](./terminal/Crash-Course-Make-Vite-Project.md)
 
 ## IDE VS Code Stuff
