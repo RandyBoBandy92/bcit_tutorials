@@ -1,5 +1,8 @@
 # Tutorials
 
+## Terminal Guides
+[Crash Course Using Terminal to Make Vite Project](./terminal/Crash-Course-Make-Vite-Project.md)
+
 ## IDE VS Code Stuff
 [How To Set Up Prettier](./How-To-Setup-Prettier.md)
 
