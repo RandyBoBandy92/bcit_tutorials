@@ -43,6 +43,8 @@ Steps:
 
 4. From within VS code, click "Terminal", then "New Terminal" (I ran out of windows screenshots sorry)
 
-![](../assets/images/new_terminal_mac.png)
+![](../assets/images/open_terminal_vs_code_windows.png)
 
 5. Then you can run `npm install` and `npm run dev`
+
+![](../assets/images/integrated_terminal.png)
