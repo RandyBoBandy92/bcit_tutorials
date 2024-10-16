@@ -57,7 +57,7 @@ RewriteRule ^ index.html [QSA,L]
 
 This configuration will redirect all requests to your index.html file, allowing your React app to handle the routing.
 
-Note: The .htaccess file should not be placed in the root directory of your domain, but nested inside the directory of your React project.
+Note: The .htaccess file should not be placed in the root directory of your domain, but nested inside the `public` directory of your React project.
 
 After following these steps, your React application should be ready for deployment!
 
