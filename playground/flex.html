@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Advanced CSS Flexbox Playground</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+      }
+
+      .playground {
+        display: flex;
+        width: 100%;
+        max-width: 800px;
+        height: 300px;
+        border: 2px solid #333;
+        padding: 10px;
+        margin-top: 20px;
+        position: relative;
+        overflow: auto;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: stretch;
+        flex-wrap: nowrap;
+        align-content: stretch;
+      }
+
+      .playground > div {
+        background-color: #4caf50;
+        color: white;
+        text-align: center;
+        padding: 10px;
+        margin: 5px;
+        width: 100px;
+        height: 50px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        order: 0;
+        flex-grow: 1;
+        flex-shrink: 1;
+        flex-basis: auto;
+        align-self: auto;
+      }
+
+      .controls {
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+        max-width: 800px;
+        gap: 10px;
+      }
+
+      .per-item-controls {
+        display: flex;
+        gap: 5px;
+        flex-wrap: wrap;
+      }
+
+      .controls label {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .item-controls {
+        border: 1px solid #ddd;
+        padding: 10px;
+        margin-bottom: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Advanced CSS Flexbox Playground</h1>
+
+    <!-- Controls for Flexbox properties -->
+    <div class="controls">
+      <label>
+        <span>Flex Direction:</span>
+        <select id="flexDirection">
+          <option value="row">row</option>
+          <option value="row-reverse">row-reverse</option>
+          <option value="column">column</option>
+          <option value="column-reverse">column-reverse</option>
+        </select>
+      </label>
+
+      <label>
+        <span>Justify Content:</span>
+        <select id="justifyContent">
+          <option value="flex-start">flex-start</option>
+          <option value="center">center</option>
+          <option value="flex-end">flex-end</option>
+          <option value="space-between">space-between</option>
+          <option value="space-around">space-around</option>
+          <option value="space-evenly">space-evenly</option>
+        </select>
+      </label>
+
+      <label>
+        <span>Align Items:</span>
+        <select id="alignItems">
+          <option value="stretch">stretch</option>
+          <option value="flex-start">flex-start</option>
+          <option value="center">center</option>
+          <option value="flex-end">flex-end</option>
+          <option value="baseline">baseline</option>
+        </select>
+      </label>
+
+      <label>
+        <span>Flex Wrap:</span>
+        <select id="flexWrap">
+          <option value="nowrap">nowrap</option>
+          <option value="wrap">wrap</option>
+          <option value="wrap-reverse">wrap-reverse</option>
+        </select>
+      </label>
+
+      <label>
+        <span>Align Content:</span>
+        <select id="alignContent">
+          <option value="stretch">stretch</option>
+          <option value="flex-start">flex-start</option>
+          <option value="center">center</option>
+          <option value="flex-end">flex-end</option>
+          <option value="space-between">space-between</option>
+          <option value="space-around">space-around</option>
+        </select>
+      </label>
+    </div>
+
+    <button onclick="addItem()">Add Item</button>
+    <button onclick="removeItem()">Remove Item</button>
+
+    <!-- Playground area -->
+    <div class="playground" id="playground">
+      <div>1</div>
+      <div>2</div>
+      <div>3</div>
+      <div>4</div>
+      <div>5</div>
+    </div>
+
+    <!-- Per-item controls -->
+    <div id="itemControlsContainer"></div>
+
+    <script>
+      // JavaScript to handle Flexbox control changes
+      document
+        .getElementById("flexDirection")
+        .addEventListener("change", updateFlexbox);
+      document
+        .getElementById("justifyContent")
+        .addEventListener("change", updateFlexbox);
+      document
+        .getElementById("alignItems")
+        .addEventListener("change", updateFlexbox);
+      document
+        .getElementById("flexWrap")
+        .addEventListener("change", updateFlexbox);
+      document
+        .getElementById("alignContent")
+        .addEventListener("change", updateFlexbox);
+
+      function updateFlexbox() {
+        const playground = document.getElementById("playground");
+        playground.style.flexDirection =
+          document.getElementById("flexDirection").value;
+        playground.style.justifyContent =
+          document.getElementById("justifyContent").value;
+        playground.style.alignItems =
+          document.getElementById("alignItems").value;
+        playground.style.flexWrap = document.getElementById("flexWrap").value;
+        playground.style.alignContent =
+          document.getElementById("alignContent").value;
+      }
+
+      function addItem() {
+        const playground = document.getElementById("playground");
+        const newItem = document.createElement("div");
+        newItem.textContent = playground.children.length + 1;
+        playground.appendChild(newItem);
+        createItemControls(newItem);
+      }
+
+      function removeItem() {
+        const playground = document.getElementById("playground");
+        if (playground.children.length > 0) {
+          playground.removeChild(playground.lastElementChild);
+          const controlsContainer = document.getElementById(
+            "itemControlsContainer"
+          );
+          controlsContainer.removeChild(controlsContainer.lastElementChild);
+        }
+      }
+
+      function createItemControls(item) {
+        const controlsContainer = document.getElementById(
+          "itemControlsContainer"
+        );
+        const itemControls = document.createElement("div");
+        itemControls.className = "item-controls";
+        itemControls.innerHTML = `
+        <strong>Item ${item.textContent} Controls:</strong><br>
+        <label>
+          Order: <input type="number" value="0" min="-10" max="10" onchange="updateItemOrder(${item.textContent}, this.value)">
+        </label>
+        <label>
+          Flex Grow: <input type="number" value="1" min="0" max="10" step="0.1" onchange="updateItemGrow(${item.textContent}, this.value)">
+        </label>
+        <label>
+          Flex Shrink: <input type="number" value="1" min="0" max="10" step="0.1" onchange="updateItemShrink(${item.textContent}, this.value)">
+        </label>
+        <label>
+          Flex Basis: <input type="text" value="auto" onchange="updateItemBasis(${item.textContent}, this.value)">
+        </label>
+        <label>
+          Align Self: 
+          <select onchange="updateItemAlignSelf(${item.textContent}, this.value)">
+            <option value="auto">auto</option>
+            <option value="flex-start">flex-start</option>
+            <option value="center">center</option>
+            <option value="flex-end">flex-end</option>
+            <option value="baseline">baseline</option>
+            <option value="stretch">stretch</option>
+          </select>
+        </label>
+      `;
+        controlsContainer.appendChild(itemControls);
+      }
+
+      function updateItemOrder(itemNumber, value) {
+        document.querySelector(
+          `.playground > div:nth-child(${itemNumber})`
+        ).style.order = value;
+      }
+
+      function updateItemGrow(itemNumber, value) {
+        document.querySelector(
+          `.playground > div:nth-child(${itemNumber})`
+        ).style.flexGrow = value;
+      }
+
+      function updateItemShrink(itemNumber, value) {
+        document.querySelector(
+          `.playground > div:nth-child(${itemNumber})`
+        ).style.flexShrink = value;
+      }
+
+      function updateItemBasis(itemNumber, value) {
+        document.querySelector(
+          `.playground > div:nth-child(${itemNumber})`
+        ).style.flexBasis = value;
+      }
+
+      function updateItemAlignSelf(itemNumber, value) {
+        document.querySelector(
+          `.playground > div:nth-child(${itemNumber})`
+        ).style.alignSelf = value;
+      }
+
+      // Initialize controls for existing items
+      document
+        .querySelectorAll(".playground > div")
+        .forEach(createItemControls);
+    </script>
+  </body>
+</html>
