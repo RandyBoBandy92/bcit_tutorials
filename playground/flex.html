@@ -24,9 +24,9 @@
         position: relative;
         overflow: auto;
         flex-direction: row;
+        flex-wrap: nowrap;
         justify-content: flex-start;
         align-items: stretch;
-        flex-wrap: nowrap;
         align-content: stretch;
       }
 
@@ -134,6 +134,17 @@
           <option value="space-around">space-around</option>
         </select>
       </label>
+
+      <label>
+        <span>Playground Width:</span>
+        <input
+          type="range"
+          id="playgroundWidth"
+          min="300"
+          max="1200"
+          value="800"
+        />
+      </label>
     </div>
 
     <button onclick="addItem()">Add Item</button>
@@ -168,6 +179,9 @@
       document
         .getElementById("alignContent")
         .addEventListener("change", updateFlexbox);
+      document
+        .getElementById("playgroundWidth")
+        .addEventListener("input", updatePlaygroundWidth);
 
       function updateFlexbox() {
         const playground = document.getElementById("playground");
@@ -180,6 +194,12 @@
         playground.style.flexWrap = document.getElementById("flexWrap").value;
         playground.style.alignContent =
           document.getElementById("alignContent").value;
+      }
+
+      function updatePlaygroundWidth() {
+        const playground = document.getElementById("playground");
+        playground.style.width =
+          document.getElementById("playgroundWidth").value + "px";
       }
 
       function addItem() {
@@ -222,6 +242,9 @@
           Flex Basis: <input type="text" value="auto" onchange="updateItemBasis(${item.textContent}, this.value)">
         </label>
         <label>
+          Width: <input type="text" value="100px" onchange="updateItemWidth(${item.textContent}, this.value)">
+        </label>
+        <label>
           Align Self: 
           <select onchange="updateItemAlignSelf(${item.textContent}, this.value)">
             <option value="auto">auto</option>
@@ -258,6 +281,12 @@
         document.querySelector(
           `.playground > div:nth-child(${itemNumber})`
         ).style.flexBasis = value;
+      }
+
+      function updateItemWidth(itemNumber, value) {
+        document.querySelector(
+          `.playground > div:nth-child(${itemNumber})`
+        ).style.width = value;
       }
 
       function updateItemAlignSelf(itemNumber, value) {
