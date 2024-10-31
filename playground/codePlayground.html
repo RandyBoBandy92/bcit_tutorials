@@ -12,6 +12,10 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/hint/show-hint.min.css"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/theme/dracula.min.css"
+    />
     <style>
       body {
         display: flex;
@@ -19,6 +23,8 @@
         height: 100vh;
         margin: 0;
         font-family: Arial, sans-serif;
+        background-color: #282a36;
+        color: #f8f8f2;
       }
       .editor-container {
         display: grid;
@@ -32,15 +38,33 @@
       }
       .CodeMirror {
         height: 100%;
-        border: 1px solid #ddd;
+        border: 1px solid #44475a;
+        background-color: #282a36;
       }
       #preview {
         flex: 1;
-        border: 1px solid #ddd;
+        border: 1px solid #44475a;
         margin: 10px;
         padding: 10px;
         height: 300px;
         overflow: auto;
+        background-color: #f8f8f2;
+      }
+      .button-container {
+        display: flex;
+        justify-content: flex-end;
+        padding: 10px;
+      }
+      button {
+        padding: 10px;
+        margin: 5px;
+        background-color: #44475a;
+        color: #f8f8f2;
+        border: none;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #6272a4;
       }
     </style>
   </head>
@@ -55,6 +79,10 @@
       ></textarea>
     </div>
     <iframe id="preview"></iframe>
+    <div class="button-container">
+      <button id="saveButton">Save as Files</button>
+      <button id="toggleDarkMode">Toggle Dark Mode</button>
+    </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/htmlmixed/htmlmixed.min.js"></script>
@@ -64,6 +92,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/hint/html-hint.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/hint/css-hint.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/hint/javascript-hint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/lint/lint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/lint/html-lint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/lint/css-lint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/lint/javascript-lint.min.js"></script>
     <script>
       // Initialize CodeMirror editors
       const htmlEditor = CodeMirror.fromTextArea(
@@ -72,7 +104,9 @@
           mode: "htmlmixed",
           lineNumbers: true,
           tabSize: 2,
+          theme: "dracula",
           extraKeys: { "Ctrl-Space": "autocomplete" },
+          lint: true,
         }
       );
       const cssEditor = CodeMirror.fromTextArea(
@@ -81,7 +115,9 @@
           mode: "css",
           lineNumbers: true,
           tabSize: 2,
+          theme: "dracula",
           extraKeys: { "Ctrl-Space": "autocomplete" },
+          lint: true,
         }
       );
       const jsEditor = CodeMirror.fromTextArea(
@@ -90,7 +126,9 @@
           mode: "javascript",
           lineNumbers: true,
           tabSize: 2,
+          theme: "dracula",
           extraKeys: { "Ctrl-Space": "autocomplete" },
+          lint: true,
         }
       );
 
@@ -156,6 +194,61 @@
       htmlEditor.on("change", debouncedUpdatePreview);
       cssEditor.on("change", debouncedUpdatePreview);
       jsEditor.on("change", debouncedUpdatePreview);
+
+      // Save content as separate files
+      document
+        .getElementById("saveButton")
+        .addEventListener("click", function () {
+          saveFile("index.html", htmlEditor.getValue());
+          saveFile("style.css", cssEditor.getValue());
+          saveFile("script.js", jsEditor.getValue());
+        });
+
+      function saveFile(filename, content) {
+        const blob = new Blob([content], { type: "text/plain" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = filename;
+        link.click();
+      }
+
+      // Toggle dark mode
+      document
+        .getElementById("toggleDarkMode")
+        .addEventListener("click", function () {
+          const body = document.body;
+          body.classList.toggle("dark-mode");
+          if (body.classList.contains("dark-mode")) {
+            htmlEditor.setOption("theme", "dracula");
+            cssEditor.setOption("theme", "dracula");
+            jsEditor.setOption("theme", "dracula");
+          } else {
+            htmlEditor.setOption("theme", "default");
+            cssEditor.setOption("theme", "default");
+            jsEditor.setOption("theme", "default");
+          }
+        });
+
+      // Load saved state from localStorage
+      window.addEventListener("load", () => {
+        if (localStorage.getItem("htmlContent"))
+          htmlEditor.setValue(localStorage.getItem("htmlContent"));
+        if (localStorage.getItem("cssContent"))
+          cssEditor.setValue(localStorage.getItem("cssContent"));
+        if (localStorage.getItem("jsContent"))
+          jsEditor.setValue(localStorage.getItem("jsContent"));
+        updatePreview();
+      });
+
+      // Save editor state to localStorage on change
+      function saveState() {
+        localStorage.setItem("htmlContent", htmlEditor.getValue());
+        localStorage.setItem("cssContent", cssEditor.getValue());
+        localStorage.setItem("jsContent", jsEditor.getValue());
+      }
+      htmlEditor.on("change", saveState);
+      cssEditor.on("change", saveState);
+      jsEditor.on("change", saveState);
     </script>
   </body>
 </html>
