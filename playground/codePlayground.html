@@ -94,6 +94,30 @@
         }
       );
 
+      // Function to trigger autocomplete hints as you type
+      function triggerAutocomplete(editor) {
+        editor.showHint({ completeSingle: false });
+      }
+
+      // Set up listeners to trigger autocomplete as you type
+      htmlEditor.on("inputRead", function (cm) {
+        if (!cm.state.completionActive) {
+          triggerAutocomplete(cm);
+        }
+      });
+
+      cssEditor.on("inputRead", function (cm) {
+        if (!cm.state.completionActive) {
+          triggerAutocomplete(cm);
+        }
+      });
+
+      jsEditor.on("inputRead", function (cm) {
+        if (!cm.state.completionActive) {
+          triggerAutocomplete(cm);
+        }
+      });
+
       let debounceTimeout;
       function debounce(func, delay) {
         return function () {
