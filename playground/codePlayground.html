@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CodePen Clone</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.css"
+    />
+    <style>
+      body {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        margin: 0;
+        font-family: Arial, sans-serif;
+      }
+      .editor-container {
+        display: flex;
+        flex: 1;
+      }
+      .editor {
+        flex: 1;
+        margin: 10px;
+        height: 100%;
+      }
+      #preview {
+        flex: 1;
+        border: 1px solid #ddd;
+        margin: 10px;
+        padding: 10px;
+        height: 300px;
+        overflow: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="editor-container">
+      <textarea id="htmlEditor" class="editor" placeholder="HTML"></textarea>
+      <textarea id="cssEditor" class="editor" placeholder="CSS"></textarea>
+      <textarea
+        id="jsEditor"
+        class="editor"
+        placeholder="JavaScript"
+      ></textarea>
+    </div>
+    <iframe id="preview"></iframe>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/htmlmixed/htmlmixed.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/css/css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/javascript/javascript.min.js"></script>
+    <script>
+      // Initialize CodeMirror editors
+      const htmlEditor = CodeMirror.fromTextArea(
+        document.getElementById("htmlEditor"),
+        {
+          mode: "htmlmixed",
+          lineNumbers: true,
+          tabSize: 2,
+        }
+      );
+      const cssEditor = CodeMirror.fromTextArea(
+        document.getElementById("cssEditor"),
+        {
+          mode: "css",
+          lineNumbers: true,
+          tabSize: 2,
+        }
+      );
+      const jsEditor = CodeMirror.fromTextArea(
+        document.getElementById("jsEditor"),
+        {
+          mode: "javascript",
+          lineNumbers: true,
+          tabSize: 2,
+        }
+      );
+
+      function updatePreview() {
+        const htmlContent = htmlEditor.getValue();
+        const cssContent = `<style>${cssEditor.getValue()}</style>`;
+        const jsContent = `<script>${jsEditor.getValue()}<\/script>`;
+
+        const previewFrame = document.getElementById("preview");
+        const previewDocument = previewFrame.contentDocument;
+        previewDocument.open();
+        previewDocument.write(htmlContent + cssContent + jsContent);
+        previewDocument.close();
+      }
+
+      // Set up listeners to update the preview when content changes
+      htmlEditor.on("change", updatePreview);
+      cssEditor.on("change", updatePreview);
+      jsEditor.on("change", updatePreview);
+    </script>
+  </body>
+</html>
