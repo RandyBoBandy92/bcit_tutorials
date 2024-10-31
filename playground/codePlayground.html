@@ -17,13 +17,18 @@
         font-family: Arial, sans-serif;
       }
       .editor-container {
-        display: flex;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 10px;
         flex: 1;
+        padding: 10px;
       }
       .editor {
-        flex: 1;
-        margin: 10px;
         height: 100%;
+      }
+      .CodeMirror {
+        height: 100%;
+        border: 1px solid #ddd;
       }
       #preview {
         flex: 1;
@@ -80,14 +85,21 @@
 
       function updatePreview() {
         const htmlContent = htmlEditor.getValue();
-        const cssContent = `<style>${cssEditor.getValue()}</style>`;
-        const jsContent = `<script>${jsEditor.getValue()}<\/script>`;
+        const cssContent = `<style>${cssEditor.getValue()}<\/style>`;
+        const jsContent = jsEditor.getValue();
 
         const previewFrame = document.getElementById("preview");
-        const previewDocument = previewFrame.contentDocument;
+        const previewDocument =
+          previewFrame.contentDocument || previewFrame.contentWindow.document;
         previewDocument.open();
-        previewDocument.write(htmlContent + cssContent + jsContent);
+        previewDocument.write(htmlContent + cssContent);
         previewDocument.close();
+
+        try {
+          previewFrame.contentWindow.eval(jsContent);
+        } catch (error) {
+          console.error("Error executing JavaScript:", error);
+        }
       }
 
       // Set up listeners to update the preview when content changes
