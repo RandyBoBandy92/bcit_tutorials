@@ -98,7 +98,8 @@
       function triggerAutocomplete(editor) {
         const cursor = editor.getCursor();
         const line = editor.getLine(cursor.line);
-        if (line[cursor.ch - 1] !== ";") {
+        const lastChar = line[cursor.ch - 1];
+        if (![";", ",", "}", ":", ")", "."].includes(lastChar)) {
           editor.showHint({ completeSingle: false });
         }
       }
