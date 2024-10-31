@@ -96,7 +96,11 @@
 
       // Function to trigger autocomplete hints as you type
       function triggerAutocomplete(editor) {
-        editor.showHint({ completeSingle: false });
+        const cursor = editor.getCursor();
+        const line = editor.getLine(cursor.line);
+        if (line[cursor.ch - 1] !== ";") {
+          editor.showHint({ completeSingle: false });
+        }
       }
 
       // Set up listeners to trigger autocomplete as you type
