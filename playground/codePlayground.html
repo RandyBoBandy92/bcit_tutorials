@@ -83,6 +83,16 @@
         }
       );
 
+      let debounceTimeout;
+      function debounce(func, delay) {
+        return function () {
+          clearTimeout(debounceTimeout);
+          debounceTimeout = setTimeout(func, delay);
+        };
+      }
+
+      const debouncedUpdatePreview = debounce(updatePreview, 500);
+
       function updatePreview() {
         const htmlContent = htmlEditor.getValue();
         const cssContent = `<style>${cssEditor.getValue()}<\/style>`;
@@ -102,10 +112,10 @@
         }
       }
 
-      // Set up listeners to update the preview when content changes
-      htmlEditor.on("change", updatePreview);
-      cssEditor.on("change", updatePreview);
-      jsEditor.on("change", updatePreview);
+      // Set up listeners to update the preview when content changes with debounce
+      htmlEditor.on("change", debouncedUpdatePreview);
+      cssEditor.on("change", debouncedUpdatePreview);
+      jsEditor.on("change", debouncedUpdatePreview);
     </script>
   </body>
 </html>
