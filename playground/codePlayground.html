@@ -8,6 +8,10 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.css"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/hint/show-hint.min.css"
+    />
     <style>
       body {
         display: flex;
@@ -56,6 +60,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/htmlmixed/htmlmixed.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/css/css.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/hint/show-hint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/hint/html-hint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/hint/css-hint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/hint/javascript-hint.min.js"></script>
     <script>
       // Initialize CodeMirror editors
       const htmlEditor = CodeMirror.fromTextArea(
@@ -64,6 +72,7 @@
           mode: "htmlmixed",
           lineNumbers: true,
           tabSize: 2,
+          extraKeys: { "Ctrl-Space": "autocomplete" },
         }
       );
       const cssEditor = CodeMirror.fromTextArea(
@@ -72,6 +81,7 @@
           mode: "css",
           lineNumbers: true,
           tabSize: 2,
+          extraKeys: { "Ctrl-Space": "autocomplete" },
         }
       );
       const jsEditor = CodeMirror.fromTextArea(
@@ -80,6 +90,7 @@
           mode: "javascript",
           lineNumbers: true,
           tabSize: 2,
+          extraKeys: { "Ctrl-Space": "autocomplete" },
         }
       );
 
