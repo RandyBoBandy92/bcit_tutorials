@@ -163,6 +163,7 @@
       <button id="saveButton">Save as Files</button>
       <button id="desktopView">Desktop (800px)</button>
       <button id="fullscreenButton">Full-Screen Preview</button>
+      <button id="resetButton">Reset</button>
       <div class="slider-container">
         <label for="responsiveSlider">Preview Width:</label>
         <input
@@ -385,6 +386,19 @@
             fullscreenFrame.style.display = "none";
             isFullscreen = false;
           }
+        });
+
+      // Reset button functionality
+      document
+        .getElementById("resetButton")
+        .addEventListener("click", function () {
+          htmlEditor.setValue("");
+          cssEditor.setValue("");
+          jsEditor.setValue("");
+          localStorage.removeItem("htmlContent");
+          localStorage.removeItem("cssContent");
+          localStorage.removeItem("jsContent");
+          updatePreview();
         });
     </script>
   </body>
