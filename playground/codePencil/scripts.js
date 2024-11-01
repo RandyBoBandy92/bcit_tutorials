@@ -12,6 +12,8 @@ const htmlEditor = CodeMirror.fromTextArea(
     matchBrackets: true,
     autoCloseBrackets: true,
     extraKeys: { "Ctrl-Space": "autocomplete" },
+    gutters: ["CodeMirror-lint-markers"],
+    lint: true, // Enable linting
   }
 );
 emmetCodeMirror(htmlEditor);
@@ -26,6 +28,8 @@ const cssEditor = CodeMirror.fromTextArea(
     matchBrackets: true,
     autoCloseBrackets: true,
     extraKeys: { "Ctrl-Space": "autocomplete" },
+    gutters: ["CodeMirror-lint-markers"],
+    lint: true, // Enable linting
   }
 );
 const jsEditor = CodeMirror.fromTextArea(document.getElementById("jsEditor"), {
@@ -37,6 +41,10 @@ const jsEditor = CodeMirror.fromTextArea(document.getElementById("jsEditor"), {
   matchBrackets: true,
   autoCloseBrackets: true,
   extraKeys: { "Ctrl-Space": "autocomplete" },
+  gutters: ["CodeMirror-lint-markers"],
+  lint: {
+    esversion: 6, // Set ES6 as the JavaScript version
+  },
 });
 
 // Flag to ensure content is fully loaded before updating preview
