@@ -43,6 +43,7 @@
         border: 1px solid #44475a;
         border-radius: 5px;
         overflow: hidden;
+        min-width: 100px;
       }
       .editor-label {
         text-align: center;
@@ -75,7 +76,9 @@
       }
       .button-container {
         display: flex;
-        justify-content: flex-end;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 5px;
         padding: 10px;
       }
       button {
@@ -85,6 +88,8 @@
         color: #f8f8f2;
         border: none;
         cursor: pointer;
+        flex: 1;
+        min-width: 80px;
       }
       button:hover {
         background-color: #6272a4;
@@ -100,9 +105,11 @@
       @media (max-width: 768px) {
         .editor-container {
           flex-direction: column;
+          gap: 5px;
         }
         #preview {
           height: 200px;
+          margin: 5px;
         }
       }
       #fullscreenPreview {
@@ -110,7 +117,7 @@
         top: 0;
         left: 0;
         width: 100%;
-        height: 80%;
+        height: 91%;
         border: none;
         z-index: 1000;
         background-color: #f8f8f2;
@@ -214,7 +221,7 @@
 
       // Make the panels resizable
       Split(["#htmlWrapper", "#cssWrapper", "#jsWrapper"], {
-        sizes: [33, 33, 33],
+        sizes: window.innerWidth <= 768 ? [100, 100, 100] : [33, 33, 33],
         minSize: 200,
         gutterSize: 10,
         snapOffset: 0,
@@ -375,6 +382,7 @@
         });
 
       // Full-screen preview functionality
+      let isFullscreen = false;
       document
         .getElementById("fullscreenButton")
         .addEventListener("click", function () {
@@ -383,24 +391,26 @@
           const cssContent = `<style>${cssEditor.getValue()}</style>`;
           const jsContent = jsEditor.getValue();
 
-          const previewDocument =
-            fullscreenFrame.contentDocument ||
-            fullscreenFrame.contentWindow.document;
-          previewDocument.open();
-          previewDocument.write(htmlContent + cssContent);
-          previewDocument.close();
+          if (!isFullscreen) {
+            const previewDocument =
+              fullscreenFrame.contentDocument ||
+              fullscreenFrame.contentWindow.document;
+            previewDocument.open();
+            previewDocument.write(htmlContent + cssContent);
+            previewDocument.close();
 
-          try {
-            fullscreenFrame.contentWindow.eval(jsContent);
-          } catch (error) {
-            console.error("Error executing JavaScript in fullscreen:", error);
-          }
+            try {
+              fullscreenFrame.contentWindow.eval(jsContent);
+            } catch (error) {
+              console.error("Error executing JavaScript in fullscreen:", error);
+            }
 
-          fullscreenFrame.style.display = "block";
-
-          fullscreenFrame.addEventListener("click", function () {
+            fullscreenFrame.style.display = "block";
+            isFullscreen = true;
+          } else {
             fullscreenFrame.style.display = "none";
-          });
+            isFullscreen = false;
+          }
         });
     </script>
   </body>
