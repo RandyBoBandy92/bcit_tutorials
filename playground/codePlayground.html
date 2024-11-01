@@ -105,6 +105,17 @@
           height: 200px;
         }
       }
+      #fullscreenPreview {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 80%;
+        border: none;
+        z-index: 1000;
+        background-color: #f8f8f2;
+        display: none;
+      }
     </style>
   </head>
   <body>
@@ -137,17 +148,19 @@
       </div>
     </div>
     <iframe id="preview"></iframe>
+    <iframe id="fullscreenPreview"></iframe>
     <div class="button-container">
       <button id="saveButton">Save as Files</button>
       <button id="toggleDarkMode">Toggle Dark Mode</button>
       <button id="mobileView">Mobile (400px)</button>
       <button id="tabletView">Tablet (600px)</button>
       <button id="desktopView">Desktop (800px)</button>
+      <button id="fullscreenButton">Full-Screen Preview</button>
       <input
         type="range"
         id="responsiveSlider"
         min="30"
-        max="100"
+        max="95"
         step="1"
         value="80"
       />
@@ -359,6 +372,35 @@
         .getElementById("responsiveSlider")
         .addEventListener("input", function () {
           document.getElementById("preview").style.width = `${this.value}%`;
+        });
+
+      // Full-screen preview functionality
+      document
+        .getElementById("fullscreenButton")
+        .addEventListener("click", function () {
+          const fullscreenFrame = document.getElementById("fullscreenPreview");
+          const htmlContent = htmlEditor.getValue();
+          const cssContent = `<style>${cssEditor.getValue()}</style>`;
+          const jsContent = jsEditor.getValue();
+
+          const previewDocument =
+            fullscreenFrame.contentDocument ||
+            fullscreenFrame.contentWindow.document;
+          previewDocument.open();
+          previewDocument.write(htmlContent + cssContent);
+          previewDocument.close();
+
+          try {
+            fullscreenFrame.contentWindow.eval(jsContent);
+          } catch (error) {
+            console.error("Error executing JavaScript in fullscreen:", error);
+          }
+
+          fullscreenFrame.style.display = "block";
+
+          fullscreenFrame.addEventListener("click", function () {
+            fullscreenFrame.style.display = "none";
+          });
         });
     </script>
   </body>
