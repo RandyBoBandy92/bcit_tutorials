@@ -16,6 +16,10 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/theme/dracula.min.css"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/split.js/1.6.0/split.min.css"
+    />
     <style>
       body {
         display: flex;
@@ -27,14 +31,18 @@
         color: #f8f8f2;
       }
       .editor-container {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 10px;
+        display: flex;
         flex: 1;
+        gap: 10px;
         padding: 10px;
       }
-      .editor {
+      .editor-wrapper {
+        display: flex;
+        flex-direction: column;
         height: 100%;
+        border: 1px solid #44475a;
+        border-radius: 5px;
+        overflow: hidden;
       }
       .editor-label {
         text-align: center;
@@ -45,23 +53,11 @@
         color: #f8f8f2;
         border-top-left-radius: 5px;
         border-top-right-radius: 5px;
-        cursor: pointer;
-      }
-      .editor-wrapper {
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-        border: 1px solid #44475a;
-        border-radius: 5px;
-        overflow: hidden;
       }
       .editor-content {
         display: flex;
         flex-direction: column;
         flex: 1;
-      }
-      .collapsed .editor-content {
-        display: none;
       }
       .CodeMirror {
         height: 100%;
@@ -95,8 +91,7 @@
       }
       @media (max-width: 768px) {
         .editor-container {
-          grid-template-columns: 1fr;
-          grid-template-rows: repeat(3, auto);
+          flex-direction: column;
         }
         #preview {
           height: 200px;
@@ -105,9 +100,9 @@
     </style>
   </head>
   <body>
-    <div class="editor-container">
-      <div class="editor-wrapper">
-        <div class="editor-label" onclick="toggleCollapse(this)">HTML</div>
+    <div class="editor-container" id="editorContainer">
+      <div class="editor-wrapper" id="htmlWrapper">
+        <div class="editor-label">HTML</div>
         <div class="editor-content">
           <textarea
             id="htmlEditor"
@@ -116,16 +111,14 @@
           ></textarea>
         </div>
       </div>
-      <div class="editor-wrapper">
-        <div class="editor-label" onclick="toggleCollapse(this)">CSS</div>
+      <div class="editor-wrapper" id="cssWrapper">
+        <div class="editor-label">CSS</div>
         <div class="editor-content">
           <textarea id="cssEditor" class="editor" placeholder="CSS"></textarea>
         </div>
       </div>
-      <div class="editor-wrapper">
-        <div class="editor-label" onclick="toggleCollapse(this)">
-          JavaScript
-        </div>
+      <div class="editor-wrapper" id="jsWrapper">
+        <div class="editor-label">JavaScript</div>
         <div class="editor-content">
           <textarea
             id="jsEditor"
@@ -139,6 +132,7 @@
     <div class="button-container">
       <button id="saveButton">Save as Files</button>
       <button id="toggleDarkMode">Toggle Dark Mode</button>
+      <button id="toggleResponsive">Toggle Responsive Preview</button>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.js"></script>
@@ -150,6 +144,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/hint/html-hint.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/hint/css-hint.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/hint/javascript-hint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/split.js/1.6.0/split.min.js"></script>
     <script>
       // Initialize CodeMirror editors
       const htmlEditor = CodeMirror.fromTextArea(
@@ -185,6 +180,15 @@
 
       // Flag to ensure content is fully loaded before updating preview
       let isLoaded = false;
+
+      // Make the panels resizable
+      Split(["#htmlWrapper", "#cssWrapper", "#jsWrapper"], {
+        sizes: [33, 33, 33],
+        minSize: 200,
+        gutterSize: 10,
+        snapOffset: 0,
+        direction: "horizontal",
+      });
 
       // Function to trigger autocomplete hints as you type
       function triggerAutocomplete(editor) {
@@ -309,11 +313,15 @@
         updatePreview();
       });
 
-      // Function to toggle collapsing of editor sections
-      function toggleCollapse(element) {
-        const wrapper = element.parentElement;
-        wrapper.classList.toggle("collapsed");
-      }
+      // Responsive preview testing
+      document
+        .getElementById("toggleResponsive")
+        .addEventListener("click", function () {
+          const preview = document.getElementById("preview");
+          const sizes = ["400px", "600px", "800px", "100%"];
+          let currentIndex = sizes.indexOf(preview.style.width);
+          preview.style.width = sizes[(currentIndex + 1) % sizes.length];
+        });
     </script>
   </body>
 </html>
