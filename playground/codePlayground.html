@@ -337,13 +337,32 @@
       document
         .getElementById("saveButton")
         .addEventListener("click", function () {
-          saveFile("index.html", htmlEditor.getValue());
-          saveFile("style.css", cssEditor.getValue());
-          saveFile("script.js", jsEditor.getValue());
+          const escapedTemplate = `
+            &lt;!DOCTYPE html&gt;
+            &lt;html lang="en"&gt;
+            &lt;head&gt;
+              &lt;meta charset="UTF-8"&gt;
+              &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+              &lt;title&gt;Your Page Title&lt;/title&gt;
+              &lt;link rel="stylesheet" href="style.css"&gt;
+            &lt;/head&gt;
+            &lt;body&gt;
+              ${htmlEditor.getValue()}
+              &lt;script src="script.js"&gt;&lt;/script&gt;
+            &lt;/body&gt;
+            &lt;/html&gt;
+          `;
+          const htmlContent = escapedTemplate
+            .replace(/&lt;/g, "<")
+            .replace(/&gt;/g, ">");
+
+          saveFile("index.html", htmlContent, "text/html");
+          saveFile("style.css", cssEditor.getValue(), "text/css");
+          saveFile("script.js", jsEditor.getValue(), "application/javascript");
         });
 
-      function saveFile(filename, content) {
-        const blob = new Blob([content], { type: "text/plain" });
+      function saveFile(filename, content, mimeType) {
+        const blob = new Blob([content], { type: mimeType });
         const link = document.createElement("a");
         link.href = URL.createObjectURL(blob);
         link.download = filename;
