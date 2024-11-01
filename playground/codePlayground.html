@@ -20,6 +20,10 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/split.js/1.6.0/split.min.css"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
     <style>
       body {
         display: flex;
@@ -213,33 +217,57 @@
     <iframe id="preview"></iframe>
     <iframe id="fullscreenPreview"></iframe>
     <div class="button-container">
-      <button id="exportJsonButton">JSON EXPORT</button>
-      <button id="shareUrlButton">Share URL</button>
-      <button id="saveButton">Save as Files</button>
-      <button id="fullscreenButton">Full-Screen Preview</button>
-      <button id="fullscreenEditorButton">Full-Screen Editor</button>
-      <button id="resetButton">Reset</button>
+      <!-- Group 1: File Actions -->
+      <div class="button-group">
+        <button id="exportJsonButton" title="Export as JSON">
+          <i class="fas fa-file-export"></i> JSON EXPORT
+        </button>
+        <button id="saveButton" title="Save as Files">
+          <i class="fas fa-save"></i> Save
+        </button>
+        <button id="uploadButton" title="Upload Files">
+          <i class="fas fa-upload"></i> Upload
+        </button>
+      </div>
+
+      <!-- Group 2: View Actions -->
+      <div class="button-group">
+        <button id="fullscreenButton" title="Full-Screen Preview">
+          <i class="fas fa-expand"></i> Full-Screen Preview
+        </button>
+        <button id="fullscreenEditorButton" title="Full-Screen Editor">
+          <i class="fas fa-code"></i> Full-Screen Editor
+        </button>
+        <button id="resetButton" title="Reset Content">
+          <i class="fas fa-redo"></i> Reset
+        </button>
+      </div>
+
+      <!-- Group 3: Miscellaneous -->
+      <div class="button-group">
+        <button id="shareUrlButton" title="Share URL">
+          <i class="fas fa-share-alt"></i> Share URL
+        </button>
+        <button id="toggleVimButton" title="Toggle VIM Mode">
+          <i class="fas fa-keyboard"></i> Enable VIM Mode
+        </button>
+        <button id="templatesButton" title="Select Template">
+          <i class="fas fa-file-alt"></i> Templates
+        </button>
+      </div>
+
+      <!-- Responsive Slider -->
       <div class="slider-container">
         <label for="responsiveSlider">Preview Width:</label>
         <input
           type="range"
           id="responsiveSlider"
           min="30"
-          max="95"
+          max="98"
           step="1"
-          value="95"
+          value="98"
         />
       </div>
-      <button id="toggleVimButton">Enable VIM Mode</button>
-      <button id="templatesButton">Templates</button>
-      <input
-        type="file"
-        id="fileInput"
-        accept=".html,.css,.js"
-        multiple
-        style="display: none"
-      />
-      <button id="uploadButton">Upload</button>
     </div>
 
     <div id="templateModal" class="modal" style="display: none">
@@ -574,8 +602,10 @@
           toggleVimMode(jsEditor);
 
           // Update button text based on the new keymap
-          this.textContent =
-            newKeyMap === "vim" ? "Disable VIM Mode" : "Enable VIM Mode";
+          this.innerHTML =
+            newKeyMap === "vim"
+              ? '<i class="fas fa-keyboard"></i> Disable VIM Mode'
+              : '<i class="fas fa-keyboard"></i> Enable VIM Mode';
         });
 
       const editors = [htmlEditor, cssEditor, jsEditor];
