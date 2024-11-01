@@ -239,6 +239,7 @@
         style="display: none"
       />
       <button id="uploadButton">Upload</button>
+      <button id="fullscreenEditorButton">Full-Screen Editor</button>
     </div>
 
     <div id="templateModal" class="modal" style="display: none">
@@ -724,6 +725,29 @@
             };
             reader.readAsText(file);
           });
+        });
+
+      // Full-screen editor functionality
+      let isEditorFullscreen = false;
+      document
+        .getElementById("fullscreenEditorButton")
+        .addEventListener("click", function () {
+          const editorContainer = document.getElementById("editorContainer");
+          const previewFrame = document.getElementById("preview");
+
+          if (!isEditorFullscreen) {
+            editorContainer.style.flex = "1 1 100%";
+            editorContainer.style.maxHeight = "90vh";
+            previewFrame.style.display = "none";
+            isEditorFullscreen = true;
+            this.textContent = "Exit Full-Screen Editor";
+          } else {
+            editorContainer.style.flex = "1";
+            editorContainer.style.maxHeight = "300px";
+            previewFrame.style.display = "block";
+            isEditorFullscreen = false;
+            this.textContent = "Full-Screen Editor";
+          }
         });
     </script>
   </body>
