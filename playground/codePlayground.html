@@ -102,15 +102,10 @@
         background-color: #6272a4;
         cursor: col-resize;
       }
-      @media (max-width: 768px) {
-        .editor-container {
-          flex-direction: column;
-          gap: 5px;
-        }
-        #preview {
-          height: 200px;
-          margin: 5px;
-        }
+
+      #preview {
+        height: 200px;
+        margin: 5px;
       }
       #fullscreenPreview {
         position: fixed;
@@ -159,8 +154,6 @@
     <div class="button-container">
       <button id="saveButton">Save as Files</button>
       <button id="toggleDarkMode">Toggle Dark Mode</button>
-      <button id="mobileView">Mobile (400px)</button>
-      <button id="tabletView">Tablet (600px)</button>
       <button id="desktopView">Desktop (800px)</button>
       <button id="fullscreenButton">Full-Screen Preview</button>
       <input
@@ -221,7 +214,7 @@
 
       // Make the panels resizable
       Split(["#htmlWrapper", "#cssWrapper", "#jsWrapper"], {
-        sizes: window.innerWidth <= 768 ? [100, 100, 100] : [33, 33, 33],
+        sizes: [33, 33, 33],
         minSize: 200,
         gutterSize: 10,
         snapOffset: 0,
@@ -357,18 +350,6 @@
       });
 
       // Responsive preview testing
-      document
-        .getElementById("mobileView")
-        .addEventListener("click", function () {
-          document.getElementById("preview").style.width = "400px";
-        });
-
-      document
-        .getElementById("tabletView")
-        .addEventListener("click", function () {
-          document.getElementById("preview").style.width = "600px";
-        });
-
       document
         .getElementById("desktopView")
         .addEventListener("click", function () {
