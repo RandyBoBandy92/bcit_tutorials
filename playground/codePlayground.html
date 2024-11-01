@@ -153,6 +153,32 @@
         font-size: 20px;
         margin-bottom: 10px;
       }
+
+      /* For WebKit browsers (Chrome, Safari) */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: #44475a;
+        border-radius: 5px;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: #6272a4;
+        border-radius: 5px;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: #50fa7b;
+      }
+
+      /* For Firefox */
+      * {
+        scrollbar-width: thin;
+        scrollbar-color: #6272a4 #44475a;
+      }
     </style>
   </head>
   <body>
