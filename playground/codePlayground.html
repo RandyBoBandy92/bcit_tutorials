@@ -126,6 +126,31 @@
       .slider-container label {
         margin-bottom: 5px;
       }
+      .modal {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #f8f8f2;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        z-index: 1001;
+      }
+
+      .modal-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        color: black;
+      }
+
+      .close-button {
+        align-self: flex-end;
+        cursor: pointer;
+        font-size: 20px;
+        margin-bottom: 10px;
+      }
     </style>
   </head>
   <body>
@@ -160,6 +185,7 @@
     <iframe id="preview"></iframe>
     <iframe id="fullscreenPreview"></iframe>
     <div class="button-container">
+      <button id="exportJsonButton">JSON EXPORT</button>
       <button id="shareUrlButton">Share URL</button>
       <button id="saveButton">Save as Files</button>
       <button id="fullscreenButton">Full-Screen Preview</button>
@@ -176,7 +202,18 @@
         />
       </div>
       <button id="toggleVimButton">Enable VIM Mode</button>
-      <button id="exportJsonButton">JSON EXPORT</button>
+      <button id="templatesButton">Templates</button>
+    </div>
+
+    <div id="templateModal" class="modal" style="display: none">
+      <div class="modal-content">
+        <span class="close-button">&times;</span>
+        <h2>Select a Template</h2>
+        <select id="templateSelect">
+          <option value="" disabled selected>Select a template</option>
+        </select>
+        <button id="loadTemplateButton">Load</button>
+      </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.js"></script>
@@ -575,6 +612,54 @@
       document
         .getElementById("exportJsonButton")
         .addEventListener("click", exportAsJson);
+
+      // Function to open the template modal
+      document
+        .getElementById("templatesButton")
+        .addEventListener("click", function () {
+          const modal = document.getElementById("templateModal");
+          const templateSelect = document.getElementById("templateSelect");
+          templateSelect.innerHTML =
+            '<option value="" disabled selected>Select a template</option>'; // Clear existing options
+
+          templates.forEach((template) => {
+            const option = document.createElement("option");
+            option.value = template;
+            option.textContent = template;
+            templateSelect.appendChild(option);
+          });
+
+          modal.style.display = "block";
+        });
+
+      // Function to close the modal
+      document
+        .querySelector(".close-button")
+        .addEventListener("click", function () {
+          document.getElementById("templateModal").style.display = "none";
+        });
+
+      // Function to load the selected template
+      document
+        .getElementById("loadTemplateButton")
+        .addEventListener("click", function () {
+          const templateSelect = document.getElementById("templateSelect");
+          const selectedTemplate = templateSelect.value;
+          if (selectedTemplate) {
+            fetch(`./templates/${selectedTemplate}`)
+              .then((response) => response.json())
+              .then((data) => {
+                htmlEditor.setValue(data.html);
+                cssEditor.setValue(data.css);
+                jsEditor.setValue(data.js);
+                updatePreview();
+              })
+              .catch((error) =>
+                console.error("Error loading template:", error)
+              );
+          }
+          document.getElementById("templateModal").style.display = "none";
+        });
     </script>
   </body>
 </html>
