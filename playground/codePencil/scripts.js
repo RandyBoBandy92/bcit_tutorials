@@ -452,3 +452,102 @@ document
       this.textContent = "Full-Screen Editor";
     }
   });
+
+// Function to save the current state as a new version
+function saveVersion() {
+  const versionName = prompt("Enter a name for this version:");
+  if (versionName) {
+    const version = {
+      html: htmlEditor.getValue(),
+      css: cssEditor.getValue(),
+      js: jsEditor.getValue(),
+    };
+    localStorage.setItem(`version_${versionName}`, JSON.stringify(version));
+    alert(`Version "${versionName}" saved!`);
+    populateVersionSelect();
+  }
+}
+
+// Function to populate the version select dropdown
+function populateVersionSelect() {
+  const versionSelect = document.getElementById("versionSelect");
+  versionSelect.innerHTML =
+    '<option value="" disabled selected>Select a version</option>'; // Clear existing options
+
+  Object.keys(localStorage).forEach((key) => {
+    if (key.startsWith("version_")) {
+      const option = document.createElement("option");
+      option.value = key;
+      option.textContent = key.replace("version_", "");
+      versionSelect.appendChild(option);
+    }
+  });
+}
+
+// Function to load a selected version
+function loadVersion() {
+  const versionSelect = document.getElementById("versionSelect");
+  const selectedVersion = versionSelect.value;
+  if (selectedVersion) {
+    const versionData = localStorage.getItem(selectedVersion);
+    if (versionData) {
+      const version = JSON.parse(versionData);
+      htmlEditor.setValue(version.html);
+      cssEditor.setValue(version.css);
+      jsEditor.setValue(version.js);
+      updatePreview();
+      alert(`Version "${selectedVersion.replace("version_", "")}" loaded!`);
+    } else {
+      alert(`Version "${selectedVersion.replace("version_", "")}" not found.`);
+    }
+  }
+}
+
+// Add event listeners for saving and loading versions
+document
+  .getElementById("saveVersionButton")
+  .addEventListener("click", saveVersion);
+document
+  .getElementById("loadVersionButton")
+  .addEventListener("click", loadVersion);
+
+// Populate version select on page load
+window.addEventListener("load", populateVersionSelect);
+
+// Function to open the version control modal
+document
+  .getElementById("versionControlButton")
+  .addEventListener("click", function () {
+    document.getElementById("versionModal").style.display = "block";
+  });
+
+// Function to close the modal
+document.querySelectorAll(".close-button").forEach((button) => {
+  button.addEventListener("click", function () {
+    document.getElementById("versionModal").style.display = "none";
+  });
+});
+
+// Function to delete a selected version
+function deleteVersion() {
+  const versionSelect = document.getElementById("versionSelect");
+  const selectedVersion = versionSelect.value;
+  if (selectedVersion) {
+    const confirmDelete = confirm(
+      `Are you sure you want to delete version "${selectedVersion.replace(
+        "version_",
+        ""
+      )}"?`
+    );
+    if (confirmDelete) {
+      localStorage.removeItem(selectedVersion);
+      populateVersionSelect();
+      alert(`Version "${selectedVersion.replace("version_", "")}" deleted!`);
+    }
+  }
+}
+
+// Add event listener for deleting versions
+document
+  .getElementById("deleteVersionButton")
+  .addEventListener("click", deleteVersion);

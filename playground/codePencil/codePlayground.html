@@ -102,6 +102,9 @@
         <button id="templatesButton" title="Select Template">
           <i class="fas fa-file-alt"></i> Templates
         </button>
+        <button id="versionControlButton" title="Version Control">
+          <i class="fas fa-history"></i> Version Control
+        </button>
       </div>
 
       <!-- Responsive Slider -->
@@ -126,6 +129,26 @@
           <option value="" disabled selected>Select a template</option>
         </select>
         <button id="loadTemplateButton">Load</button>
+      </div>
+    </div>
+
+    <!-- Version Control Modal -->
+    <div id="versionModal" class="modal" style="display: none">
+      <div class="modal-content">
+        <span class="close-button">&times;</span>
+        <h2>Version Control</h2>
+        <button id="saveVersionButton" title="Save Version">
+          <i class="fas fa-save"></i> Save Version
+        </button>
+        <select id="versionSelect" title="Select Version">
+          <option value="" disabled selected>Select a version</option>
+        </select>
+        <button id="loadVersionButton" title="Load Version">
+          <i class="fas fa-folder-open"></i> Load Version
+        </button>
+        <button id="deleteVersionButton" title="Delete Version">
+          <i class="fas fa-trash"></i> Delete Version
+        </button>
       </div>
     </div>
 
