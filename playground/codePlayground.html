@@ -160,6 +160,7 @@
     <iframe id="preview"></iframe>
     <iframe id="fullscreenPreview"></iframe>
     <div class="button-container">
+      <button id="shareUrlButton">Share URL</button>
       <button id="saveButton">Save as Files</button>
       <button id="desktopView">Desktop (800px)</button>
       <button id="fullscreenButton">Full-Screen Preview</button>
@@ -176,7 +177,6 @@
         />
       </div>
       <button id="toggleVimButton">Enable VIM Mode</button>
-      <button id="shareUrlButton">Share URL</button>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.js"></script>
@@ -406,6 +406,15 @@
         }
         if (urlParams.has("js")) {
           jsEditor.setValue(decodeContent(urlParams.get("js")));
+        }
+
+        // Remove URL parameters without refreshing
+        if (window.history.replaceState) {
+          window.history.replaceState(
+            {},
+            document.title,
+            window.location.pathname
+          );
         }
       });
 
