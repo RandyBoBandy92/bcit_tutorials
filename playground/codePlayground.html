@@ -176,6 +176,7 @@
         />
       </div>
       <button id="toggleVimButton">Enable VIM Mode</button>
+      <button id="exportJsonButton">JSON EXPORT</button>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.js"></script>
@@ -190,6 +191,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/split.js/1.6.0/split.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/keymap/vim.min.js"></script>
     <script>
+      const templates = ["test.json"];
+
       // Initialize CodeMirror editors
       const htmlEditor = CodeMirror.fromTextArea(
         document.getElementById("htmlEditor"),
@@ -551,6 +554,27 @@
       document
         .getElementById("shareUrlButton")
         .addEventListener("click", updateShareUrl);
+
+      // Function to export content as JSON
+      function exportAsJson() {
+        const content = {
+          html: htmlEditor.getValue(),
+          css: cssEditor.getValue(),
+          js: jsEditor.getValue(),
+        };
+
+        const jsonContent = JSON.stringify(content, null, 2); // Pretty print JSON
+        const blob = new Blob([jsonContent], { type: "application/json" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "codeExport.json";
+        link.click();
+      }
+
+      // Add event listener to the "JSON EXPORT" button
+      document
+        .getElementById("exportJsonButton")
+        .addEventListener("click", exportAsJson);
     </script>
   </body>
 </html>
