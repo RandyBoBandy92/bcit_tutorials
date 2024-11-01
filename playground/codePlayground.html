@@ -118,6 +118,14 @@
         background-color: #f8f8f2;
         display: none;
       }
+      .slider-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .slider-container label {
+        margin-bottom: 5px;
+      }
     </style>
   </head>
   <body>
@@ -153,17 +161,19 @@
     <iframe id="fullscreenPreview"></iframe>
     <div class="button-container">
       <button id="saveButton">Save as Files</button>
-      <button id="toggleDarkMode">Toggle Dark Mode</button>
       <button id="desktopView">Desktop (800px)</button>
       <button id="fullscreenButton">Full-Screen Preview</button>
-      <input
-        type="range"
-        id="responsiveSlider"
-        min="30"
-        max="95"
-        step="1"
-        value="80"
-      />
+      <div class="slider-container">
+        <label for="responsiveSlider">Preview Width:</label>
+        <input
+          type="range"
+          id="responsiveSlider"
+          min="30"
+          max="95"
+          step="1"
+          value="95"
+        />
+      </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.js"></script>
@@ -313,23 +323,6 @@
         link.download = filename;
         link.click();
       }
-
-      // Toggle dark mode
-      document
-        .getElementById("toggleDarkMode")
-        .addEventListener("click", function () {
-          const body = document.body;
-          body.classList.toggle("dark-mode");
-          if (body.classList.contains("dark-mode")) {
-            htmlEditor.setOption("theme", "dracula");
-            cssEditor.setOption("theme", "dracula");
-            jsEditor.setOption("theme", "dracula");
-          } else {
-            htmlEditor.setOption("theme", "default");
-            cssEditor.setOption("theme", "default");
-            jsEditor.setOption("theme", "default");
-          }
-        });
 
       // Load saved state from localStorage
       window.addEventListener("load", () => {
