@@ -179,6 +179,7 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/emmet-codemirror@1.2.5/dist/emmet.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/htmlmixed/htmlmixed.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/xml/xml.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/css/css.min.js"></script>
@@ -203,6 +204,7 @@
           extraKeys: { "Ctrl-Space": "autocomplete" },
         }
       );
+      emmetCodeMirror(htmlEditor);
       const cssEditor = CodeMirror.fromTextArea(
         document.getElementById("cssEditor"),
         {
