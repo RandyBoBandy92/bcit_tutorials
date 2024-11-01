@@ -153,6 +153,9 @@
         }
       );
 
+      // Flag to ensure content is fully loaded before updating preview
+      let isLoaded = false;
+
       // Function to trigger autocomplete hints as you type
       function triggerAutocomplete(editor) {
         const cursor = editor.getCursor();
@@ -193,8 +196,10 @@
       const debouncedUpdatePreview = debounce(updatePreview, 500);
 
       function updatePreview() {
+        if (!isLoaded) return; // Do not update preview until content is fully loaded
+
         const htmlContent = htmlEditor.getValue();
-        const cssContent = `<style>${cssEditor.getValue()}<\/style>`;
+        const cssContent = `<style>${cssEditor.getValue()}</style>`;
         const jsContent = jsEditor.getValue();
 
         const previewFrame = document.getElementById("preview");
@@ -209,6 +214,12 @@
         } catch (error) {
           console.error("Error executing JavaScript:", error);
         }
+
+        // Save editor state to localStorage on every preview update
+        console.log("Saving HTML, CSS, JS to localStorage");
+        localStorage.setItem("htmlContent", htmlEditor.getValue());
+        localStorage.setItem("cssContent", cssEditor.getValue());
+        localStorage.setItem("jsContent", jsEditor.getValue());
       }
 
       // Set up listeners to update the preview when content changes with debounce
@@ -252,24 +263,21 @@
 
       // Load saved state from localStorage
       window.addEventListener("load", () => {
-        if (localStorage.getItem("htmlContent"))
+        if (localStorage.getItem("htmlContent")) {
+          console.log("Loading HTML from localStorage");
           htmlEditor.setValue(localStorage.getItem("htmlContent"));
-        if (localStorage.getItem("cssContent"))
+        }
+        if (localStorage.getItem("cssContent")) {
+          console.log("Loading CSS from localStorage");
           cssEditor.setValue(localStorage.getItem("cssContent"));
-        if (localStorage.getItem("jsContent"))
+        }
+        if (localStorage.getItem("jsContent")) {
+          console.log("Loading JS from localStorage");
           jsEditor.setValue(localStorage.getItem("jsContent"));
+        }
+        isLoaded = true;
         updatePreview();
       });
-
-      // Save editor state to localStorage on change
-      function saveState() {
-        localStorage.setItem("htmlContent", htmlEditor.getValue());
-        localStorage.setItem("cssContent", cssEditor.getValue());
-        localStorage.setItem("jsContent", jsEditor.getValue());
-      }
-      htmlEditor.on("change", saveState);
-      cssEditor.on("change", saveState);
-      jsEditor.on("change", saveState);
     </script>
   </body>
 </html>
