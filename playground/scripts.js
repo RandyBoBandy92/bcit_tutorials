@@ -1,0 +1,454 @@
+const templates = ["test.json", "ui.json"];
+
+// Initialize CodeMirror editors
+const htmlEditor = CodeMirror.fromTextArea(
+  document.getElementById("htmlEditor"),
+  {
+    mode: "htmlmixed",
+    lineNumbers: true,
+    tabSize: 2,
+    theme: "dracula",
+    lineWrapping: true,
+    matchBrackets: true,
+    autoCloseBrackets: true,
+    extraKeys: { "Ctrl-Space": "autocomplete" },
+  }
+);
+emmetCodeMirror(htmlEditor);
+const cssEditor = CodeMirror.fromTextArea(
+  document.getElementById("cssEditor"),
+  {
+    mode: "css",
+    lineNumbers: true,
+    tabSize: 2,
+    theme: "dracula",
+    lineWrapping: true,
+    matchBrackets: true,
+    autoCloseBrackets: true,
+    extraKeys: { "Ctrl-Space": "autocomplete" },
+  }
+);
+const jsEditor = CodeMirror.fromTextArea(document.getElementById("jsEditor"), {
+  mode: "javascript",
+  lineNumbers: true,
+  tabSize: 2,
+  theme: "dracula",
+  lineWrapping: true,
+  matchBrackets: true,
+  autoCloseBrackets: true,
+  extraKeys: { "Ctrl-Space": "autocomplete" },
+});
+
+// Flag to ensure content is fully loaded before updating preview
+let isLoaded = false;
+
+// Make the panels resizable
+Split(["#htmlWrapper", "#cssWrapper", "#jsWrapper"], {
+  sizes: [33, 33, 33],
+  minSize: 200,
+  gutterSize: 10,
+  snapOffset: 0,
+  direction: "horizontal",
+  gutter: function (index, direction) {
+    const gutter = document.createElement("div");
+    gutter.className = `gutter gutter-${direction}`;
+    return gutter;
+  },
+});
+
+// Function to trigger autocomplete hints as you type
+function triggerAutocomplete(editor) {
+  const cursor = editor.getCursor();
+  const line = editor.getLine(cursor.line);
+  const lastChar = line[cursor.ch - 1];
+  if (
+    ![";", ",", "{", "}", ":", "(", ")", ".", "]", ">", " ", "="].includes(
+      lastChar
+    )
+  ) {
+    editor.showHint({ completeSingle: false });
+  }
+}
+
+// Set up listeners to trigger autocomplete as you type
+htmlEditor.on("inputRead", function (cm) {
+  if (!cm.state.completionActive) {
+    triggerAutocomplete(cm);
+  }
+});
+
+cssEditor.on("inputRead", function (cm) {
+  if (!cm.state.completionActive) {
+    triggerAutocomplete(cm);
+  }
+});
+
+jsEditor.on("inputRead", function (cm) {
+  if (!cm.state.completionActive) {
+    triggerAutocomplete(cm);
+  }
+});
+
+let debounceTimeout;
+function debounce(func, delay) {
+  return function () {
+    clearTimeout(debounceTimeout);
+    debounceTimeout = setTimeout(func, delay);
+  };
+}
+
+const debouncedUpdatePreview = debounce(updatePreview, 500);
+
+function updatePreview() {
+  if (!isLoaded) return; // Do not update preview until content is fully loaded
+
+  const htmlContent = htmlEditor.getValue();
+  const cssContent = `<style>${cssEditor.getValue()}</style>`;
+  const jsContent = jsEditor.getValue();
+
+  const previewFrame = document.getElementById("preview");
+  const previewDocument =
+    previewFrame.contentDocument || previewFrame.contentWindow.document;
+  previewDocument.open();
+  previewDocument.write(htmlContent + cssContent);
+  previewDocument.close();
+
+  try {
+    previewFrame.contentWindow.eval(jsContent);
+  } catch (error) {
+    console.error("Error executing JavaScript:", error);
+  }
+
+  // Save editor state to localStorage on every preview update
+  console.log("Saving HTML, CSS, JS to localStorage");
+  localStorage.setItem("htmlContent", htmlEditor.getValue());
+  localStorage.setItem("cssContent", cssEditor.getValue());
+  localStorage.setItem("jsContent", jsEditor.getValue());
+}
+
+// Set up listeners to update the preview when content changes with debounce
+htmlEditor.on("change", debouncedUpdatePreview);
+cssEditor.on("change", debouncedUpdatePreview);
+jsEditor.on("change", debouncedUpdatePreview);
+
+// Save content as separate files
+document.getElementById("saveButton").addEventListener("click", function () {
+  const escapedTemplate = `
+            &lt;!DOCTYPE html&gt;
+            &lt;html lang="en"&gt;
+            &lt;head&gt;
+              &lt;meta charset="UTF-8"&gt;
+              &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+              &lt;title&gt;Your Page Title&lt;/title&gt;
+              &lt;link rel="stylesheet" href="style.css"&gt;
+            &lt;/head&gt;
+            &lt;body&gt;
+              ${htmlEditor.getValue()}
+              &lt;script src="script.js"&gt;&lt;/script&gt;
+            &lt;/body&gt;
+            &lt;/html&gt;
+          `;
+  const htmlContent = escapedTemplate
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">");
+
+  saveFile("index.html", htmlContent, "text/html");
+  saveFile("style.css", cssEditor.getValue(), "text/css");
+  saveFile("script.js", jsEditor.getValue(), "application/javascript");
+});
+
+function saveFile(filename, content, mimeType) {
+  const blob = new Blob([content], { type: mimeType });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = filename;
+  link.click();
+}
+
+// Load saved state from localStorage
+window.addEventListener("load", () => {
+  if (localStorage.getItem("htmlContent")) {
+    console.log("Loading HTML from localStorage");
+    htmlEditor.setValue(localStorage.getItem("htmlContent"));
+  }
+  if (localStorage.getItem("cssContent")) {
+    console.log("Loading CSS from localStorage");
+    cssEditor.setValue(localStorage.getItem("cssContent"));
+  }
+  if (localStorage.getItem("jsContent")) {
+    console.log("Loading JS from localStorage");
+    jsEditor.setValue(localStorage.getItem("jsContent"));
+  }
+  isLoaded = true;
+  updatePreview();
+
+  // Load VIM mode preference from localStorage
+  const vimMode = localStorage.getItem("vimMode") === "true";
+  if (vimMode) {
+    toggleVimMode(htmlEditor);
+    toggleVimMode(cssEditor);
+    toggleVimMode(jsEditor);
+    document.getElementById("toggleVimButton").textContent = "Disable VIM Mode";
+  }
+
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.has("html")) {
+    htmlEditor.setValue(decodeContent(urlParams.get("html")));
+  }
+  if (urlParams.has("css")) {
+    cssEditor.setValue(decodeContent(urlParams.get("css")));
+  }
+  if (urlParams.has("js")) {
+    jsEditor.setValue(decodeContent(urlParams.get("js")));
+  }
+
+  // Remove URL parameters without refreshing
+  if (window.history.replaceState) {
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }
+});
+
+// Responsive preview testing
+document
+  .getElementById("responsiveSlider")
+  .addEventListener("input", function () {
+    document.getElementById("preview").style.width = `${this.value}%`;
+  });
+
+// Full-screen preview functionality
+let isFullscreen = false;
+document
+  .getElementById("fullscreenButton")
+  .addEventListener("click", function () {
+    const fullscreenFrame = document.getElementById("fullscreenPreview");
+    const htmlContent = htmlEditor.getValue();
+    const cssContent = `<style>${cssEditor.getValue()}</style>`;
+    const jsContent = jsEditor.getValue();
+
+    if (!isFullscreen) {
+      const previewDocument =
+        fullscreenFrame.contentDocument ||
+        fullscreenFrame.contentWindow.document;
+      previewDocument.open();
+      previewDocument.write(htmlContent + cssContent);
+      previewDocument.close();
+
+      try {
+        fullscreenFrame.contentWindow.eval(jsContent);
+      } catch (error) {
+        console.error("Error executing JavaScript in fullscreen:", error);
+      }
+
+      fullscreenFrame.style.display = "block";
+      isFullscreen = true;
+    } else {
+      fullscreenFrame.style.display = "none";
+      isFullscreen = false;
+    }
+  });
+
+// Reset button functionality
+document.getElementById("resetButton").addEventListener("click", function () {
+  const confirmReset = confirm("Are you sure you want to reset all content?");
+  if (confirmReset) {
+    htmlEditor.setValue("");
+    cssEditor.setValue("");
+    jsEditor.setValue("");
+    localStorage.removeItem("htmlContent");
+    localStorage.removeItem("cssContent");
+    localStorage.removeItem("jsContent");
+    updatePreview();
+  }
+});
+
+// Function to toggle VIM mode and update button text
+function toggleVimMode(editor) {
+  const currentKeyMap = editor.getOption("keyMap");
+  const newKeyMap = currentKeyMap === "vim" ? "default" : "vim";
+  editor.setOption("keyMap", newKeyMap);
+
+  // Save VIM mode preference to localStorage
+  localStorage.setItem("vimMode", newKeyMap === "vim");
+
+  return newKeyMap;
+}
+
+// Add event listener to the toggle button
+document
+  .getElementById("toggleVimButton")
+  .addEventListener("click", function () {
+    const newKeyMap = toggleVimMode(htmlEditor);
+    toggleVimMode(cssEditor);
+    toggleVimMode(jsEditor);
+
+    // Update button text based on the new keymap
+    this.innerHTML =
+      newKeyMap === "vim"
+        ? '<i class="fas fa-keyboard"></i> Disable VIM Mode'
+        : '<i class="fas fa-keyboard"></i> Enable VIM Mode';
+  });
+
+const editors = [htmlEditor, cssEditor, jsEditor];
+let currentEditorIndex = 0;
+
+// Function to switch focus to the next editor
+function switchEditor() {
+  currentEditorIndex = (currentEditorIndex + 1) % editors.length;
+  editors[currentEditorIndex].focus();
+}
+
+// Add event listener for keydown to switch editors
+document.addEventListener("keydown", function (event) {
+  if (event.ctrlKey && event.shiftKey && event.key.toLowerCase() === "e") {
+    event.preventDefault(); // Prevent default behavior
+    switchEditor();
+  }
+});
+
+// Function to encode content into a URL-friendly format
+function encodeContent(content) {
+  return encodeURIComponent(btoa(content));
+}
+
+// Function to decode content from a URL-friendly format
+function decodeContent(encodedContent) {
+  return atob(decodeURIComponent(encodedContent));
+}
+
+// Function to update the URL with encoded content
+function updateShareUrl() {
+  const htmlContent = encodeContent(htmlEditor.getValue());
+  const cssContent = encodeContent(cssEditor.getValue());
+  const jsContent = encodeContent(jsEditor.getValue());
+
+  const url = new URL(window.location.href);
+  url.searchParams.set("html", htmlContent);
+  url.searchParams.set("css", cssContent);
+  url.searchParams.set("js", jsContent);
+
+  window.history.replaceState({}, "", url);
+  alert("URL updated! You can now share this link.");
+}
+
+// Add event listener to the "Share URL" button
+document
+  .getElementById("shareUrlButton")
+  .addEventListener("click", updateShareUrl);
+
+// Function to export content as JSON
+function exportAsJson() {
+  const content = {
+    html: htmlEditor.getValue(),
+    css: cssEditor.getValue(),
+    js: jsEditor.getValue(),
+  };
+
+  const jsonContent = JSON.stringify(content, null, 2); // Pretty print JSON
+  const blob = new Blob([jsonContent], { type: "application/json" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "codeExport.json";
+  link.click();
+}
+
+// Add event listener to the "JSON EXPORT" button
+document
+  .getElementById("exportJsonButton")
+  .addEventListener("click", exportAsJson);
+
+// Function to open the template modal
+document
+  .getElementById("templatesButton")
+  .addEventListener("click", function () {
+    const modal = document.getElementById("templateModal");
+    const templateSelect = document.getElementById("templateSelect");
+    templateSelect.innerHTML =
+      '<option value="" disabled selected>Select a template</option>'; // Clear existing options
+
+    templates.forEach((template) => {
+      const option = document.createElement("option");
+      option.value = template;
+      option.textContent = template;
+      templateSelect.appendChild(option);
+    });
+
+    modal.style.display = "block";
+  });
+
+// Function to close the modal
+document.querySelector(".close-button").addEventListener("click", function () {
+  document.getElementById("templateModal").style.display = "none";
+});
+
+// Function to load the selected template
+document
+  .getElementById("loadTemplateButton")
+  .addEventListener("click", function () {
+    const templateSelect = document.getElementById("templateSelect");
+    const selectedTemplate = templateSelect.value;
+    if (selectedTemplate) {
+      fetch(`./templates/${selectedTemplate}`)
+        .then((response) => response.json())
+        .then((data) => {
+          htmlEditor.setValue(data.html);
+          cssEditor.setValue(data.css);
+          jsEditor.setValue(data.js);
+          updatePreview();
+        })
+        .catch((error) => console.error("Error loading template:", error));
+    }
+    document.getElementById("templateModal").style.display = "none";
+  });
+
+// Add event listener to the "Upload" button
+const uploadButton = document.getElementById("uploadButton");
+const fileInput = document.getElementById("fileInput");
+
+uploadButton.addEventListener("click", function () {
+  fileInput.click();
+});
+
+// Add event listener to the file input
+document
+  .getElementById("fileInput")
+  .addEventListener("change", function (event) {
+    const files = event.target.files;
+    Array.from(files).forEach((file) => {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const fileContent = e.target.result;
+        if (file.type === "text/html") {
+          htmlEditor.setValue(fileContent);
+        } else if (file.type === "text/css") {
+          cssEditor.setValue(fileContent);
+        } else if (file.type === "application/javascript") {
+          jsEditor.setValue(fileContent);
+        }
+        updatePreview();
+      };
+      reader.readAsText(file);
+    });
+  });
+
+// Full-screen editor functionality
+let isEditorFullscreen = false;
+document
+  .getElementById("fullscreenEditorButton")
+  .addEventListener("click", function () {
+    const editorContainer = document.getElementById("editorContainer");
+    const previewFrame = document.getElementById("preview");
+
+    if (!isEditorFullscreen) {
+      editorContainer.style.flex = "1 1 100%";
+      editorContainer.style.maxHeight = "90vh";
+      previewFrame.style.display = "none";
+      isEditorFullscreen = true;
+      this.textContent = "Exit Full-Screen Editor";
+    } else {
+      editorContainer.style.flex = "1";
+      editorContainer.style.maxHeight = "300px";
+      previewFrame.style.display = "block";
+      isEditorFullscreen = false;
+      this.textContent = "Full-Screen Editor";
+    }
+  });
