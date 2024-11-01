@@ -176,6 +176,7 @@
         />
       </div>
       <button id="toggleVimButton">Enable VIM Mode</button>
+      <button id="shareUrlButton">Share URL</button>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.js"></script>
@@ -395,6 +396,17 @@
           document.getElementById("toggleVimButton").textContent =
             "Disable VIM Mode";
         }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has("html")) {
+          htmlEditor.setValue(decodeContent(urlParams.get("html")));
+        }
+        if (urlParams.has("css")) {
+          cssEditor.setValue(decodeContent(urlParams.get("css")));
+        }
+        if (urlParams.has("js")) {
+          jsEditor.setValue(decodeContent(urlParams.get("js")));
+        }
       });
 
       // Responsive preview testing
@@ -500,6 +512,36 @@
           switchEditor();
         }
       });
+
+      // Function to encode content into a URL-friendly format
+      function encodeContent(content) {
+        return encodeURIComponent(btoa(content));
+      }
+
+      // Function to decode content from a URL-friendly format
+      function decodeContent(encodedContent) {
+        return atob(decodeURIComponent(encodedContent));
+      }
+
+      // Function to update the URL with encoded content
+      function updateShareUrl() {
+        const htmlContent = encodeContent(htmlEditor.getValue());
+        const cssContent = encodeContent(cssEditor.getValue());
+        const jsContent = encodeContent(jsEditor.getValue());
+
+        const url = new URL(window.location.href);
+        url.searchParams.set("html", htmlContent);
+        url.searchParams.set("css", cssContent);
+        url.searchParams.set("js", jsContent);
+
+        window.history.replaceState({}, "", url);
+        alert("URL updated! You can now share this link.");
+      }
+
+      // Add event listener to the "Share URL" button
+      document
+        .getElementById("shareUrlButton")
+        .addEventListener("click", updateShareUrl);
     </script>
   </body>
 </html>
