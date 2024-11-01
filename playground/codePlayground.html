@@ -162,7 +162,6 @@
     <div class="button-container">
       <button id="shareUrlButton">Share URL</button>
       <button id="saveButton">Save as Files</button>
-      <button id="desktopView">Desktop (800px)</button>
       <button id="fullscreenButton">Full-Screen Preview</button>
       <button id="resetButton">Reset</button>
       <div class="slider-container">
@@ -420,12 +419,6 @@
 
       // Responsive preview testing
       document
-        .getElementById("desktopView")
-        .addEventListener("click", function () {
-          document.getElementById("preview").style.width = "800px";
-        });
-
-      document
         .getElementById("responsiveSlider")
         .addEventListener("input", function () {
           document.getElementById("preview").style.width = `${this.value}%`;
@@ -467,13 +460,18 @@
       document
         .getElementById("resetButton")
         .addEventListener("click", function () {
-          htmlEditor.setValue("");
-          cssEditor.setValue("");
-          jsEditor.setValue("");
-          localStorage.removeItem("htmlContent");
-          localStorage.removeItem("cssContent");
-          localStorage.removeItem("jsContent");
-          updatePreview();
+          const confirmReset = confirm(
+            "Are you sure you want to reset all content?"
+          );
+          if (confirmReset) {
+            htmlEditor.setValue("");
+            cssEditor.setValue("");
+            jsEditor.setValue("");
+            localStorage.removeItem("htmlContent");
+            localStorage.removeItem("cssContent");
+            localStorage.removeItem("jsContent");
+            updatePreview();
+          }
         });
 
       // Function to toggle VIM mode and update button text
