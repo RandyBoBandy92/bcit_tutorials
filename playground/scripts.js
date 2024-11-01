@@ -1,34 +1,51 @@
 const templates = ["test.json", "ui.json"];
 
+// Define variables for frequently accessed HTML elements
+const htmlEditorElement = document.getElementById("htmlEditor");
+const cssEditorElement = document.getElementById("cssEditor");
+const jsEditorElement = document.getElementById("jsEditor");
+const previewFrame = document.getElementById("preview");
+const saveButton = document.getElementById("saveButton");
+const resetButton = document.getElementById("resetButton");
+const toggleVimButton = document.getElementById("toggleVimButton");
+const responsiveSlider = document.getElementById("responsiveSlider");
+const fullscreenButton = document.getElementById("fullscreenButton");
+const shareUrlButton = document.getElementById("shareUrlButton");
+const exportJsonButton = document.getElementById("exportJsonButton");
+const templatesButton = document.getElementById("templatesButton");
+const templateModal = document.getElementById("templateModal");
+const templateSelect = document.getElementById("templateSelect");
+const loadTemplateButton = document.getElementById("loadTemplateButton");
+const uploadButton = document.getElementById("uploadButton");
+const fileInput = document.getElementById("fileInput");
+const fullscreenEditorButton = document.getElementById(
+  "fullscreenEditorButton"
+);
+const editorContainer = document.getElementById("editorContainer");
+
 // Initialize CodeMirror editors
-const htmlEditor = CodeMirror.fromTextArea(
-  document.getElementById("htmlEditor"),
-  {
-    mode: "htmlmixed",
-    lineNumbers: true,
-    tabSize: 2,
-    theme: "dracula",
-    lineWrapping: true,
-    matchBrackets: true,
-    autoCloseBrackets: true,
-    extraKeys: { "Ctrl-Space": "autocomplete" },
-  }
-);
+const htmlEditor = CodeMirror.fromTextArea(htmlEditorElement, {
+  mode: "htmlmixed",
+  lineNumbers: true,
+  tabSize: 2,
+  theme: "dracula",
+  lineWrapping: true,
+  matchBrackets: true,
+  autoCloseBrackets: true,
+  extraKeys: { "Ctrl-Space": "autocomplete" },
+});
 emmetCodeMirror(htmlEditor);
-const cssEditor = CodeMirror.fromTextArea(
-  document.getElementById("cssEditor"),
-  {
-    mode: "css",
-    lineNumbers: true,
-    tabSize: 2,
-    theme: "dracula",
-    lineWrapping: true,
-    matchBrackets: true,
-    autoCloseBrackets: true,
-    extraKeys: { "Ctrl-Space": "autocomplete" },
-  }
-);
-const jsEditor = CodeMirror.fromTextArea(document.getElementById("jsEditor"), {
+const cssEditor = CodeMirror.fromTextArea(cssEditorElement, {
+  mode: "css",
+  lineNumbers: true,
+  tabSize: 2,
+  theme: "dracula",
+  lineWrapping: true,
+  matchBrackets: true,
+  autoCloseBrackets: true,
+  extraKeys: { "Ctrl-Space": "autocomplete" },
+});
+const jsEditor = CodeMirror.fromTextArea(jsEditorElement, {
   mode: "javascript",
   lineNumbers: true,
   tabSize: 2,
@@ -132,7 +149,7 @@ cssEditor.on("change", debouncedUpdatePreview);
 jsEditor.on("change", debouncedUpdatePreview);
 
 // Save content as separate files
-document.getElementById("saveButton").addEventListener("click", function () {
+saveButton.addEventListener("click", function () {
   const escapedTemplate = `
             &lt;!DOCTYPE html&gt;
             &lt;html lang="en"&gt;
@@ -209,46 +226,40 @@ window.addEventListener("load", () => {
 });
 
 // Responsive preview testing
-document
-  .getElementById("responsiveSlider")
-  .addEventListener("input", function () {
-    document.getElementById("preview").style.width = `${this.value}%`;
-  });
+responsiveSlider.addEventListener("input", function () {
+  previewFrame.style.width = `${this.value}%`;
+});
 
 // Full-screen preview functionality
-let isFullscreen = false;
-document
-  .getElementById("fullscreenButton")
-  .addEventListener("click", function () {
-    const fullscreenFrame = document.getElementById("fullscreenPreview");
-    const htmlContent = htmlEditor.getValue();
-    const cssContent = `<style>${cssEditor.getValue()}</style>`;
-    const jsContent = jsEditor.getValue();
+fullscreenButton.addEventListener("click", function () {
+  const fullscreenFrame = document.getElementById("fullscreenPreview");
+  const htmlContent = htmlEditor.getValue();
+  const cssContent = `<style>${cssEditor.getValue()}</style>`;
+  const jsContent = jsEditor.getValue();
 
-    if (!isFullscreen) {
-      const previewDocument =
-        fullscreenFrame.contentDocument ||
-        fullscreenFrame.contentWindow.document;
-      previewDocument.open();
-      previewDocument.write(htmlContent + cssContent);
-      previewDocument.close();
+  if (!isFullscreen) {
+    const previewDocument =
+      fullscreenFrame.contentDocument || fullscreenFrame.contentWindow.document;
+    previewDocument.open();
+    previewDocument.write(htmlContent + cssContent);
+    previewDocument.close();
 
-      try {
-        fullscreenFrame.contentWindow.eval(jsContent);
-      } catch (error) {
-        console.error("Error executing JavaScript in fullscreen:", error);
-      }
-
-      fullscreenFrame.style.display = "block";
-      isFullscreen = true;
-    } else {
-      fullscreenFrame.style.display = "none";
-      isFullscreen = false;
+    try {
+      fullscreenFrame.contentWindow.eval(jsContent);
+    } catch (error) {
+      console.error("Error executing JavaScript in fullscreen:", error);
     }
-  });
+
+    fullscreenFrame.style.display = "block";
+    isFullscreen = true;
+  } else {
+    fullscreenFrame.style.display = "none";
+    isFullscreen = false;
+  }
+});
 
 // Reset button functionality
-document.getElementById("resetButton").addEventListener("click", function () {
+resetButton.addEventListener("click", function () {
   const confirmReset = confirm("Are you sure you want to reset all content?");
   if (confirmReset) {
     htmlEditor.setValue("");
@@ -274,19 +285,17 @@ function toggleVimMode(editor) {
 }
 
 // Add event listener to the toggle button
-document
-  .getElementById("toggleVimButton")
-  .addEventListener("click", function () {
-    const newKeyMap = toggleVimMode(htmlEditor);
-    toggleVimMode(cssEditor);
-    toggleVimMode(jsEditor);
+toggleVimButton.addEventListener("click", function () {
+  const newKeyMap = toggleVimMode(htmlEditor);
+  toggleVimMode(cssEditor);
+  toggleVimMode(jsEditor);
 
-    // Update button text based on the new keymap
-    this.innerHTML =
-      newKeyMap === "vim"
-        ? '<i class="fas fa-keyboard"></i> Disable VIM Mode'
-        : '<i class="fas fa-keyboard"></i> Enable VIM Mode';
-  });
+  // Update button text based on the new keymap
+  this.innerHTML =
+    newKeyMap === "vim"
+      ? '<i class="fas fa-keyboard"></i> Disable VIM Mode'
+      : '<i class="fas fa-keyboard"></i> Enable VIM Mode';
+});
 
 const editors = [htmlEditor, cssEditor, jsEditor];
 let currentEditorIndex = 0;
@@ -331,9 +340,7 @@ function updateShareUrl() {
 }
 
 // Add event listener to the "Share URL" button
-document
-  .getElementById("shareUrlButton")
-  .addEventListener("click", updateShareUrl);
+shareUrlButton.addEventListener("click", updateShareUrl);
 
 // Function to export content as JSON
 function exportAsJson() {
@@ -352,103 +359,83 @@ function exportAsJson() {
 }
 
 // Add event listener to the "JSON EXPORT" button
-document
-  .getElementById("exportJsonButton")
-  .addEventListener("click", exportAsJson);
+exportJsonButton.addEventListener("click", exportAsJson);
 
 // Function to open the template modal
-document
-  .getElementById("templatesButton")
-  .addEventListener("click", function () {
-    const modal = document.getElementById("templateModal");
-    const templateSelect = document.getElementById("templateSelect");
-    templateSelect.innerHTML =
-      '<option value="" disabled selected>Select a template</option>'; // Clear existing options
+templatesButton.addEventListener("click", function () {
+  templateSelect.innerHTML =
+    '<option value="" disabled selected>Select a template</option>'; // Clear existing options
 
-    templates.forEach((template) => {
-      const option = document.createElement("option");
-      option.value = template;
-      option.textContent = template;
-      templateSelect.appendChild(option);
-    });
-
-    modal.style.display = "block";
+  templates.forEach((template) => {
+    const option = document.createElement("option");
+    option.value = template;
+    option.textContent = template;
+    templateSelect.appendChild(option);
   });
+
+  templateModal.style.display = "block";
+});
 
 // Function to close the modal
 document.querySelector(".close-button").addEventListener("click", function () {
-  document.getElementById("templateModal").style.display = "none";
+  templateModal.style.display = "none";
 });
 
 // Function to load the selected template
-document
-  .getElementById("loadTemplateButton")
-  .addEventListener("click", function () {
-    const templateSelect = document.getElementById("templateSelect");
-    const selectedTemplate = templateSelect.value;
-    if (selectedTemplate) {
-      fetch(`./templates/${selectedTemplate}`)
-        .then((response) => response.json())
-        .then((data) => {
-          htmlEditor.setValue(data.html);
-          cssEditor.setValue(data.css);
-          jsEditor.setValue(data.js);
-          updatePreview();
-        })
-        .catch((error) => console.error("Error loading template:", error));
-    }
-    document.getElementById("templateModal").style.display = "none";
-  });
+loadTemplateButton.addEventListener("click", function () {
+  const selectedTemplate = templateSelect.value;
+  if (selectedTemplate) {
+    fetch(`./templates/${selectedTemplate}`)
+      .then((response) => response.json())
+      .then((data) => {
+        htmlEditor.setValue(data.html);
+        cssEditor.setValue(data.css);
+        jsEditor.setValue(data.js);
+        updatePreview();
+      })
+      .catch((error) => console.error("Error loading template:", error));
+  }
+  templateModal.style.display = "none";
+});
 
 // Add event listener to the "Upload" button
-const uploadButton = document.getElementById("uploadButton");
-const fileInput = document.getElementById("fileInput");
-
 uploadButton.addEventListener("click", function () {
   fileInput.click();
 });
 
 // Add event listener to the file input
-document
-  .getElementById("fileInput")
-  .addEventListener("change", function (event) {
-    const files = event.target.files;
-    Array.from(files).forEach((file) => {
-      const reader = new FileReader();
-      reader.onload = function (e) {
-        const fileContent = e.target.result;
-        if (file.type === "text/html") {
-          htmlEditor.setValue(fileContent);
-        } else if (file.type === "text/css") {
-          cssEditor.setValue(fileContent);
-        } else if (file.type === "application/javascript") {
-          jsEditor.setValue(fileContent);
-        }
-        updatePreview();
-      };
-      reader.readAsText(file);
-    });
+fileInput.addEventListener("change", function (event) {
+  const files = event.target.files;
+  Array.from(files).forEach((file) => {
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      const fileContent = e.target.result;
+      if (file.type === "text/html") {
+        htmlEditor.setValue(fileContent);
+      } else if (file.type === "text/css") {
+        cssEditor.setValue(fileContent);
+      } else if (file.type === "application/javascript") {
+        jsEditor.setValue(fileContent);
+      }
+      updatePreview();
+    };
+    reader.readAsText(file);
   });
+});
 
 // Full-screen editor functionality
-let isEditorFullscreen = false;
-document
-  .getElementById("fullscreenEditorButton")
-  .addEventListener("click", function () {
-    const editorContainer = document.getElementById("editorContainer");
-    const previewFrame = document.getElementById("preview");
-
-    if (!isEditorFullscreen) {
-      editorContainer.style.flex = "1 1 100%";
-      editorContainer.style.maxHeight = "90vh";
-      previewFrame.style.display = "none";
-      isEditorFullscreen = true;
-      this.textContent = "Exit Full-Screen Editor";
-    } else {
-      editorContainer.style.flex = "1";
-      editorContainer.style.maxHeight = "300px";
-      previewFrame.style.display = "block";
-      isEditorFullscreen = false;
-      this.textContent = "Full-Screen Editor";
-    }
-  });
+fullscreenEditorButton.addEventListener("click", function () {
+  if (!isEditorFullscreen) {
+    editorContainer.style.flex = "1 1 100%";
+    editorContainer.style.maxHeight = "90vh";
+    previewFrame.style.display = "none";
+    isEditorFullscreen = true;
+    this.textContent = "Exit Full-Screen Editor";
+  } else {
+    editorContainer.style.flex = "1";
+    editorContainer.style.maxHeight = "300px";
+    previewFrame.style.display = "block";
+    isEditorFullscreen = false;
+    this.textContent = "Full-Screen Editor";
+  }
+});
