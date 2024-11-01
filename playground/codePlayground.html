@@ -120,10 +120,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/hint/html-hint.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/hint/css-hint.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/hint/javascript-hint.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/lint/lint.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/lint/html-lint.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/lint/css-lint.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/lint/javascript-lint.min.js"></script>
     <script>
       // Initialize CodeMirror editors
       const htmlEditor = CodeMirror.fromTextArea(
@@ -134,7 +130,6 @@
           tabSize: 2,
           theme: "dracula",
           extraKeys: { "Ctrl-Space": "autocomplete" },
-          lint: true,
         }
       );
       const cssEditor = CodeMirror.fromTextArea(
@@ -145,7 +140,6 @@
           tabSize: 2,
           theme: "dracula",
           extraKeys: { "Ctrl-Space": "autocomplete" },
-          lint: true,
         }
       );
       const jsEditor = CodeMirror.fromTextArea(
@@ -156,7 +150,6 @@
           tabSize: 2,
           theme: "dracula",
           extraKeys: { "Ctrl-Space": "autocomplete" },
-          lint: true,
         }
       );
 
