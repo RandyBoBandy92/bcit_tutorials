@@ -231,6 +231,14 @@
       </div>
       <button id="toggleVimButton">Enable VIM Mode</button>
       <button id="templatesButton">Templates</button>
+      <input
+        type="file"
+        id="fileInput"
+        accept=".html,.css,.js"
+        multiple
+        style="display: none"
+      />
+      <button id="uploadButton">Upload</button>
     </div>
 
     <div id="templateModal" class="modal" style="display: none">
@@ -687,6 +695,35 @@
               );
           }
           document.getElementById("templateModal").style.display = "none";
+        });
+
+      // Add event listener to the "Upload" button
+      document
+        .getElementById("uploadButton")
+        .addEventListener("click", function () {
+          document.getElementById("fileInput").click();
+        });
+
+      // Add event listener to the file input
+      document
+        .getElementById("fileInput")
+        .addEventListener("change", function (event) {
+          const files = event.target.files;
+          Array.from(files).forEach((file) => {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+              const fileContent = e.target.result;
+              if (file.type === "text/html") {
+                htmlEditor.setValue(fileContent);
+              } else if (file.type === "text/css") {
+                cssEditor.setValue(fileContent);
+              } else if (file.type === "application/javascript") {
+                jsEditor.setValue(fileContent);
+              }
+              updatePreview();
+            };
+            reader.readAsText(file);
+          });
         });
     </script>
   </body>
