@@ -492,6 +492,20 @@ function populateVersionSelect() {
   });
 }
 
+// Function to specifically load the codePencil template
+document
+  .getElementById("loadCodePencilTemplateButton")
+  .addEventListener("click", function () {
+    fetch(`./templates/codePencil.json`)
+      .then((response) => response.json())
+      .then((data) => {
+        htmlEditor.setValue(data.html);
+        cssEditor.setValue(data.css);
+        jsEditor.setValue(data.js);
+        updatePreview();
+      });
+  });
+
 // Function to load a selected version
 function loadVersion() {
   const versionSelect = document.getElementById("versionSelect");
