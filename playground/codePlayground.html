@@ -385,6 +385,16 @@
         }
         isLoaded = true;
         updatePreview();
+
+        // Load VIM mode preference from localStorage
+        const vimMode = localStorage.getItem("vimMode") === "true";
+        if (vimMode) {
+          toggleVimMode(htmlEditor);
+          toggleVimMode(cssEditor);
+          toggleVimMode(jsEditor);
+          document.getElementById("toggleVimButton").textContent =
+            "Disable VIM Mode";
+        }
       });
 
       // Responsive preview testing
@@ -450,6 +460,10 @@
         const currentKeyMap = editor.getOption("keyMap");
         const newKeyMap = currentKeyMap === "vim" ? "default" : "vim";
         editor.setOption("keyMap", newKeyMap);
+
+        // Save VIM mode preference to localStorage
+        localStorage.setItem("vimMode", newKeyMap === "vim");
+
         return newKeyMap;
       }
 
