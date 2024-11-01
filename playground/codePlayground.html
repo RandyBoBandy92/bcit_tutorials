@@ -175,6 +175,7 @@
           value="95"
         />
       </div>
+      <button id="toggleVimButton">Enable VIM Mode</button>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.js"></script>
@@ -186,6 +187,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/hint/css-hint.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/hint/javascript-hint.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/split.js/1.6.0/split.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/keymap/vim.min.js"></script>
     <script>
       // Initialize CodeMirror editors
       const htmlEditor = CodeMirror.fromTextArea(
@@ -196,6 +198,8 @@
           tabSize: 2,
           theme: "dracula",
           lineWrapping: true,
+          matchBrackets: true,
+          autoCloseBrackets: true,
           extraKeys: { "Ctrl-Space": "autocomplete" },
         }
       );
@@ -207,6 +211,8 @@
           tabSize: 2,
           theme: "dracula",
           lineWrapping: true,
+          matchBrackets: true,
+          autoCloseBrackets: true,
           extraKeys: { "Ctrl-Space": "autocomplete" },
         }
       );
@@ -218,6 +224,8 @@
           tabSize: 2,
           theme: "dracula",
           lineWrapping: true,
+          matchBrackets: true,
+          autoCloseBrackets: true,
           extraKeys: { "Ctrl-Space": "autocomplete" },
         }
       );
@@ -244,7 +252,22 @@
         const cursor = editor.getCursor();
         const line = editor.getLine(cursor.line);
         const lastChar = line[cursor.ch - 1];
-        if (![";", ",", "}", ":", ")", "."].includes(lastChar)) {
+        if (
+          ![
+            ";",
+            ",",
+            "{",
+            "}",
+            ":",
+            "(",
+            ")",
+            ".",
+            "]",
+            ">",
+            " ",
+            "=",
+          ].includes(lastChar)
+        ) {
           editor.showHint({ completeSingle: false });
         }
       }
@@ -402,6 +425,48 @@
           localStorage.removeItem("jsContent");
           updatePreview();
         });
+
+      // Function to toggle VIM mode and update button text
+      function toggleVimMode(editor) {
+        const currentKeyMap = editor.getOption("keyMap");
+        const newKeyMap = currentKeyMap === "vim" ? "default" : "vim";
+        editor.setOption("keyMap", newKeyMap);
+        return newKeyMap;
+      }
+
+      // Add event listener to the toggle button
+      document
+        .getElementById("toggleVimButton")
+        .addEventListener("click", function () {
+          const newKeyMap = toggleVimMode(htmlEditor);
+          toggleVimMode(cssEditor);
+          toggleVimMode(jsEditor);
+
+          // Update button text based on the new keymap
+          this.textContent =
+            newKeyMap === "vim" ? "Disable VIM Mode" : "Enable VIM Mode";
+        });
+
+      const editors = [htmlEditor, cssEditor, jsEditor];
+      let currentEditorIndex = 0;
+
+      // Function to switch focus to the next editor
+      function switchEditor() {
+        currentEditorIndex = (currentEditorIndex + 1) % editors.length;
+        editors[currentEditorIndex].focus();
+      }
+
+      // Add event listener for keydown to switch editors
+      document.addEventListener("keydown", function (event) {
+        if (
+          event.ctrlKey &&
+          event.shiftKey &&
+          event.key.toLowerCase() === "e"
+        ) {
+          event.preventDefault(); // Prevent default behavior
+          switchEditor();
+        }
+      });
     </script>
   </body>
 </html>
