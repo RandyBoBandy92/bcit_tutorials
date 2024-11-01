@@ -40,15 +40,23 @@
         text-align: center;
         font-weight: bold;
         margin-bottom: 5px;
+        padding: 10px;
+        background-color: #44475a;
+        color: #f8f8f2;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
       }
       .editor-wrapper {
         display: flex;
         flex-direction: column;
         height: 100%;
+        border: 1px solid #44475a;
+        border-radius: 5px;
+        overflow: hidden;
       }
       .CodeMirror {
         height: 100%;
-        border: 1px solid #44475a;
+        border-top: none;
         background-color: #282a36;
       }
       #preview {
