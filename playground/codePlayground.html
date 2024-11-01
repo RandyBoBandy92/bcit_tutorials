@@ -28,7 +28,7 @@
       }
       .editor-container {
         display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-columns: repeat(3, 1fr);
         gap: 10px;
         flex: 1;
         padding: 10px;
@@ -45,6 +45,7 @@
         color: #f8f8f2;
         border-top-left-radius: 5px;
         border-top-right-radius: 5px;
+        cursor: pointer;
       }
       .editor-wrapper {
         display: flex;
@@ -53,6 +54,14 @@
         border: 1px solid #44475a;
         border-radius: 5px;
         overflow: hidden;
+      }
+      .editor-content {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+      }
+      .collapsed .editor-content {
+        display: none;
       }
       .CodeMirror {
         height: 100%;
@@ -84,25 +93,46 @@
       button:hover {
         background-color: #6272a4;
       }
+      @media (max-width: 768px) {
+        .editor-container {
+          grid-template-columns: 1fr;
+          grid-template-rows: repeat(3, auto);
+        }
+        #preview {
+          height: 200px;
+        }
+      }
     </style>
   </head>
   <body>
     <div class="editor-container">
       <div class="editor-wrapper">
-        <div class="editor-label">HTML</div>
-        <textarea id="htmlEditor" class="editor" placeholder="HTML"></textarea>
+        <div class="editor-label" onclick="toggleCollapse(this)">HTML</div>
+        <div class="editor-content">
+          <textarea
+            id="htmlEditor"
+            class="editor"
+            placeholder="HTML"
+          ></textarea>
+        </div>
       </div>
       <div class="editor-wrapper">
-        <div class="editor-label">CSS</div>
-        <textarea id="cssEditor" class="editor" placeholder="CSS"></textarea>
+        <div class="editor-label" onclick="toggleCollapse(this)">CSS</div>
+        <div class="editor-content">
+          <textarea id="cssEditor" class="editor" placeholder="CSS"></textarea>
+        </div>
       </div>
       <div class="editor-wrapper">
-        <div class="editor-label">JavaScript</div>
-        <textarea
-          id="jsEditor"
-          class="editor"
-          placeholder="JavaScript"
-        ></textarea>
+        <div class="editor-label" onclick="toggleCollapse(this)">
+          JavaScript
+        </div>
+        <div class="editor-content">
+          <textarea
+            id="jsEditor"
+            class="editor"
+            placeholder="JavaScript"
+          ></textarea>
+        </div>
       </div>
     </div>
     <iframe id="preview"></iframe>
@@ -278,6 +308,12 @@
         isLoaded = true;
         updatePreview();
       });
+
+      // Function to toggle collapsing of editor sections
+      function toggleCollapse(element) {
+        const wrapper = element.parentElement;
+        wrapper.classList.toggle("collapsed");
+      }
     </script>
   </body>
 </html>
