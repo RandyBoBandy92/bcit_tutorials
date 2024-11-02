@@ -3,6 +3,7 @@ const templates = [
   "flex.json",
   "workshopCards.json",
   "workshopIntervals.json",
+  "workshopPromises.json",
 ];
 
 // Initialize CodeMirror editors
