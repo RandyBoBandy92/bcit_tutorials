@@ -1,11 +1,12 @@
 const templates = [
-  "codePencil.json",
-  "flex.json",
-  "workshopCards.json",
-  "workshopIntervals.json",
-  "workshopPromises.json",
-  "resume.json",
-  "bouncingEmojis.json",
+  { name: "Code Pencil", file: "codePencil.json" },
+  { name: "Flex", file: "flex.json" },
+  { name: "Workshop Cards", file: "workshopCards.json" },
+  { name: "Workshop Intervals", file: "workshopIntervals.json" },
+  { name: "Workshop Promises", file: "workshopPromises.json" },
+  { name: "Resume", file: "resume.json" },
+  { name: "Bouncing Emojis", file: "bouncingEmojis.json" },
+  { name: "Simple Function Practice", file: "simpleFunctionPractice.json" },
 ];
 
 // Initialize CodeMirror editors
@@ -303,16 +304,18 @@ document
 
 // Reset button functionality
 document.getElementById("resetButton").addEventListener("click", function () {
-  const confirmReset = confirm("Are you sure you want to reset all content?");
-  if (confirmReset) {
-    htmlEditor.setValue("");
-    cssEditor.setValue("");
-    jsEditor.setValue("");
-    localStorage.removeItem("htmlContent");
-    localStorage.removeItem("cssContent");
-    localStorage.removeItem("jsContent");
-    updatePreview();
-  }
+  const saveWarning = confirm(
+    "Have you saved your in-progress code? Click 'Cancel' to save it first."
+  );
+  if (!saveWarning) return; // Exit if the user chooses to save their work
+
+  htmlEditor.setValue("");
+  cssEditor.setValue("");
+  jsEditor.setValue("");
+  localStorage.removeItem("htmlContent");
+  localStorage.removeItem("cssContent");
+  localStorage.removeItem("jsContent");
+  updatePreview();
 });
 
 // Function to toggle VIM mode and update button text
@@ -452,8 +455,8 @@ document
 
     templates.forEach((template) => {
       const option = document.createElement("option");
-      option.value = template;
-      option.textContent = template;
+      option.value = template.file;
+      option.textContent = template.name;
       templateSelect.appendChild(option);
     });
 
@@ -470,9 +473,9 @@ document
   .getElementById("loadTemplateButton")
   .addEventListener("click", function () {
     const templateSelect = document.getElementById("templateSelect");
-    const selectedTemplate = templateSelect.value;
-    if (selectedTemplate) {
-      fetch(`./templates/${selectedTemplate}`)
+    const selectedTemplateFile = templateSelect.value;
+    if (selectedTemplateFile) {
+      fetch(`./templates/${selectedTemplateFile}`)
         .then((response) => response.json())
         .then((data) => {
           htmlEditor.setValue(data.html);
