@@ -48,9 +48,6 @@ const htmlEditor = CodeMirror.fromTextArea(
       F11: function (cm) {
         cm.setOption("fullScreen", !cm.getOption("fullScreen"));
       },
-      Esc: function (cm) {
-        if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
-      },
     },
     gutters: ["CodeMirror-lint-markers"],
     lint: true, // Enable linting
@@ -76,9 +73,6 @@ const cssEditor = CodeMirror.fromTextArea(
       F11: function (cm) {
         cm.setOption("fullScreen", !cm.getOption("fullScreen"));
       },
-      Esc: function (cm) {
-        if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
-      },
     },
     gutters: ["CodeMirror-lint-markers"],
     lint: true, // Enable linting
@@ -100,9 +94,6 @@ const jsEditor = CodeMirror.fromTextArea(document.getElementById("jsEditor"), {
     "Cmd-/": "toggleComment",
     F11: function (cm) {
       cm.setOption("fullScreen", !cm.getOption("fullScreen"));
-    },
-    Esc: function (cm) {
-      if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
     },
   },
   gutters: ["CodeMirror-lint-markers"],
@@ -845,16 +836,49 @@ window.addEventListener("resize", function () {
 function toggleHtmlFullscreen() {
   const isFullscreen = htmlEditor.getOption("fullScreen");
   htmlEditor.setOption("fullScreen", !isFullscreen);
+  toggleFullscreenButton(htmlEditor, isFullscreen);
 }
 
 function toggleCssFullscreen() {
   const isFullscreen = cssEditor.getOption("fullScreen");
   cssEditor.setOption("fullScreen", !isFullscreen);
+  toggleFullscreenButton(cssEditor, isFullscreen);
 }
 
 function toggleJsFullscreen() {
   const isFullscreen = jsEditor.getOption("fullScreen");
   jsEditor.setOption("fullScreen", !isFullscreen);
+  toggleFullscreenButton(jsEditor, isFullscreen);
+}
+
+// Function to add or remove the fullscreen exit button
+function toggleFullscreenButton(editor, isFullscreen) {
+  let button = document.getElementById("exitFullscreenButton");
+  if (!isFullscreen) {
+    if (!button) {
+      button = document.createElement("button");
+      button.id = "exitFullscreenButton";
+      button.textContent = "X";
+      button.style.fontSize = "1rem";
+      button.style.minWidth = "unset";
+      button.style.position = "fixed";
+      button.style.top = "10px";
+      button.style.right = "10px";
+      button.style.zIndex = "1000";
+      button.style.backgroundColor = "#f00";
+      button.style.color = "#fff";
+      button.style.border = "none";
+      button.style.padding = "10px";
+      button.style.cursor = "pointer";
+      document.body.appendChild(button);
+    }
+    button.onclick = () => {
+      editor.setOption("fullScreen", false);
+      button.remove();
+    };
+  } else if (button) {
+    button.remove();
+  }
 }
 
 // Update the event listeners
