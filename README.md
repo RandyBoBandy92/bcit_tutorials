@@ -1,8 +1,9 @@
 # NEW Playground
 
+[Code Pencil](https://randybobandy92.github.io/bcit_tutorials/)
+
 [Flexbox Playground](./playground/flex.html)
 
-[Code Pencil](https://randybobandy92.github.io/bcit_tutorials/)
 # Tutorials
 
 ## Terminal Guides
