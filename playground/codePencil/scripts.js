@@ -175,17 +175,32 @@ function saveFile(filename, content, mimeType) {
 
 // Load saved state from localStorage
 window.addEventListener("load", () => {
-  if (localStorage.getItem("htmlContent")) {
-    console.log("Loading HTML from localStorage");
-    htmlEditor.setValue(localStorage.getItem("htmlContent"));
-  }
-  if (localStorage.getItem("cssContent")) {
-    console.log("Loading CSS from localStorage");
-    cssEditor.setValue(localStorage.getItem("cssContent"));
-  }
-  if (localStorage.getItem("jsContent")) {
-    console.log("Loading JS from localStorage");
-    jsEditor.setValue(localStorage.getItem("jsContent"));
+  if (
+    !localStorage.getItem("htmlContent") &&
+    !localStorage.getItem("cssContent") &&
+    !localStorage.getItem("jsContent")
+  ) {
+    // Load the "Help" codePencil template if local storage is empty
+    fetch(`./templates/codePencil.json`)
+      .then((response) => response.json())
+      .then((data) => {
+        htmlEditor.setValue(data.html);
+        cssEditor.setValue(data.css);
+        jsEditor.setValue(data.js);
+        updatePreview();
+        updateFullscreenPreview(); // Update full-screen preview
+      })
+      .catch((error) => console.error("Error loading Help template:", error));
+  } else {
+    if (localStorage.getItem("htmlContent")) {
+      htmlEditor.setValue(localStorage.getItem("htmlContent"));
+    }
+    if (localStorage.getItem("cssContent")) {
+      cssEditor.setValue(localStorage.getItem("cssContent"));
+    }
+    if (localStorage.getItem("jsContent")) {
+      jsEditor.setValue(localStorage.getItem("jsContent"));
+    }
   }
   isLoaded = true;
   updatePreview();
