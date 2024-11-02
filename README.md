@@ -1,3 +1,8 @@
+# NEW Playground
+
+[Flexbox Playground](./playground/flex.html)
+
+[Code Pencil](https://randybobandy92.github.io/bcit_tutorials/)
 # Tutorials
 
 ## Terminal Guides
@@ -21,6 +26,3 @@
 
 [PHP - How to Set Up X Debug](./PHP-How-To-Set-Up-X-Debug.md)
 
-## Playground
-
-[Flexbox Playground](./playground/flex.html)

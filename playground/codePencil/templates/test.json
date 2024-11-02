@@ -1,5 +1,0 @@
-{
-  "html": "<body>\n  <h1>Hello</h1>\n</body>",
-  "css": "body {\n  background-color: black;\n  color: white;\n}",
-  "js": "const h1 = document.querySelector('h1');"
-}
