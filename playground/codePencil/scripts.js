@@ -5,6 +5,7 @@ const templates = [
   "workshopIntervals.json",
   "workshopPromises.json",
   "resume.json",
+  "bouncingEmojis.json",
 ];
 
 // Initialize CodeMirror editors
