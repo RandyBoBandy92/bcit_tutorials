@@ -216,3 +216,58 @@ button:hover {
     flex-direction: row;
   } */
 }
+
+.tab-nav {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  body {
+    width: 97vw;
+    margin: 0 auto;
+  }
+  .tab-nav {
+    display: flex;
+    justify-content: space-around;
+    background-color: #44475a;
+    padding: 10px;
+    margin-left: 20px;
+  }
+
+  .tab-nav button {
+    background-color: #6272a4;
+    color: #f8f8f2;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+  }
+
+  .tab-nav button.active {
+    background-color: #50fa7b;
+  }
+
+  .editor-container {
+    display: block;
+    width: 97vw;
+  }
+
+  .editor-wrapper,
+  #preview {
+    display: none;
+  }
+
+  .editor-wrapper.active,
+  #preview.active {
+    display: block;
+    height: 90vh;
+  }
+
+  .editor-content {
+    height: 90vh;
+    width: 100%;
+  }
+  /* // hide the gutters */
+  .gutter {
+    display: none;
+  }
+}

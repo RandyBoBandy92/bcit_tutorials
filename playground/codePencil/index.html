@@ -50,7 +50,13 @@
     />
   </head>
   <body>
-    <div class="editor-container" id="editorContainer">
+    <div class="tab-nav">
+      <button id="htmlTab">HTML</button>
+      <button id="cssTab">CSS</button>
+      <button id="jsTab">JavaScript</button>
+      <button id="previewTab">Preview</button>
+    </div>
+    <div class="editor-container">
       <div class="editor-wrapper" id="htmlWrapper">
         <div class="editor-label">HTML</div>
         <div class="editor-content">
@@ -215,6 +221,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/edit/closetag.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/edit/matchtags.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/edit/trailingspace.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/display/autorefresh.min.js"></script>
     <script src="scripts.js"></script>
   </body>
 </html>

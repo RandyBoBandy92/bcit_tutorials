@@ -13,6 +13,7 @@ const htmlEditor = CodeMirror.fromTextArea(
   document.getElementById("htmlEditor"),
   {
     mode: "htmlmixed",
+    autoRefresh: true,
     lineNumbers: true,
     tabSize: 2,
     theme: "dracula",
@@ -36,6 +37,7 @@ const cssEditor = CodeMirror.fromTextArea(
   {
     mode: "css",
     lineNumbers: true,
+    autoRefresh: true,
     tabSize: 2,
     theme: "dracula",
     lineWrapping: true,
@@ -54,6 +56,7 @@ const cssEditor = CodeMirror.fromTextArea(
 const jsEditor = CodeMirror.fromTextArea(document.getElementById("jsEditor"), {
   mode: "javascript",
   lineNumbers: true,
+  autoRefresh: true,
   tabSize: 2,
   theme: "dracula",
   lineWrapping: true,
@@ -717,4 +720,77 @@ function updateFullscreenPreview() {
 document.getElementById("hamburgerMenu").addEventListener("click", function () {
   const buttonContainer = document.querySelector(".button-container");
   buttonContainer.classList.toggle("open");
+});
+
+document.getElementById("htmlTab").addEventListener("click", function () {
+  // remove the active class from all the tabs
+  const tabs = ["htmlTab", "cssTab", "jsTab", "previewTab"];
+  tabs.forEach((id) => {
+    document.getElementById(id).classList.remove("active");
+  });
+  document.getElementById("htmlTab").classList.add("active");
+  switchTab("htmlWrapper");
+});
+
+document.getElementById("cssTab").addEventListener("click", function () {
+  // remove the active class from all the tabs
+  const tabs = ["htmlTab", "cssTab", "jsTab", "previewTab"];
+  tabs.forEach((id) => {
+    document.getElementById(id).classList.remove("active");
+  });
+  document.getElementById("cssTab").classList.add("active");
+  switchTab("cssWrapper");
+});
+
+document.getElementById("jsTab").addEventListener("click", function () {
+  // remove the active class from all the tabs
+  const tabs = ["htmlTab", "cssTab", "jsTab", "previewTab"];
+  tabs.forEach((id) => {
+    document.getElementById(id).classList.remove("active");
+  });
+  document.getElementById("jsTab").classList.add("active");
+  switchTab("jsWrapper");
+});
+
+document.getElementById("previewTab").addEventListener("click", function () {
+  // remove the active class from all the tabs
+  const tabs = ["htmlTab", "cssTab", "jsTab", "previewTab"];
+  tabs.forEach((id) => {
+    document.getElementById(id).classList.remove("active");
+  });
+  document.getElementById("previewTab").classList.add("active");
+  switchTab("preview");
+});
+
+function switchTab(activeId) {
+  const tabs = ["htmlWrapper", "cssWrapper", "jsWrapper", "preview"];
+  tabs.forEach((id) => {
+    document.getElementById(id).classList.remove("active");
+  });
+
+  document.getElementById(activeId).classList.add("active");
+
+  // if we are switching to preview, we need to display none the editor-container
+  if (activeId === "preview") {
+    document.querySelector(".editor-container").style.display = "none";
+  } else {
+    document.querySelector(".editor-container").style.display = "block";
+  }
+
+  document.getElementById(activeId).style.width = "100%";
+
+  // refresh all editors
+  htmlEditor.refresh();
+  cssEditor.refresh();
+  jsEditor.refresh();
+
+  document.querySelector(`#${activeId}Tab`).classList.add("active");
+}
+
+// watch the viewport, if it is above 768px. we need to set .editor-container to flex
+window.addEventListener("resize", function () {
+  if (window.innerWidth > 768) {
+    document.querySelector(".editor-container").style.display = "flex";
+  }
+  // if we go below, lets make HTML the active tab
 });
