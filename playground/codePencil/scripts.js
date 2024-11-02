@@ -11,6 +11,8 @@ const htmlEditor = CodeMirror.fromTextArea(
     lineWrapping: true,
     matchBrackets: true,
     autoCloseBrackets: true,
+    autoCloseTags: true,
+    showTrailingSpace: true,
     extraKeys: {
       "Ctrl-Space": "autocomplete",
       "Ctrl-/": "toggleComment",
@@ -31,6 +33,7 @@ const cssEditor = CodeMirror.fromTextArea(
     lineWrapping: true,
     matchBrackets: true,
     autoCloseBrackets: true,
+    showTrailingSpace: true,
     extraKeys: {
       "Ctrl-Space": "autocomplete",
       "Ctrl-/": "toggleComment",
@@ -48,6 +51,7 @@ const jsEditor = CodeMirror.fromTextArea(document.getElementById("jsEditor"), {
   lineWrapping: true,
   matchBrackets: true,
   autoCloseBrackets: true,
+  showTrailingSpace: true,
   extraKeys: {
     "Ctrl-Space": "autocomplete",
     "Ctrl-/": "toggleComment",
