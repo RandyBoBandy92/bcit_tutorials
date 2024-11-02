@@ -858,7 +858,7 @@ function toggleFullscreenButton(editor, isFullscreen) {
     if (!button) {
       button = document.createElement("button");
       button.id = "exitFullscreenButton";
-      button.textContent = "X";
+      button.innerHTML = '<i class="fas fa-times"></i>';
       button.style.fontSize = "1rem";
       button.style.minWidth = "unset";
       button.style.position = "fixed";
@@ -870,6 +870,14 @@ function toggleFullscreenButton(editor, isFullscreen) {
       button.style.border = "none";
       button.style.padding = "10px";
       button.style.cursor = "pointer";
+
+      button.addEventListener("mouseenter", () => {
+        button.style.backgroundColor = "#c00";
+      });
+      button.addEventListener("mouseleave", () => {
+        button.style.backgroundColor = "#f00";
+      });
+
       document.body.appendChild(button);
     }
     button.onclick = () => {
