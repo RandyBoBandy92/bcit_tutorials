@@ -20,6 +20,10 @@ const templateGroups = {
       name: "Intermediate Function Practice Arrays",
       file: "intermediateFunctionPracticeArrays.json",
     },
+    {
+      name: "Intermediate Function Quiz",
+      file: "intermediateFunctionQuiz.json",
+    },
   ],
 };
 
@@ -556,7 +560,7 @@ let isEditorFullscreen = false;
 document
   .getElementById("fullscreenEditorButton")
   .addEventListener("click", function () {
-    const editorContainer = document.getElementById("editorContainer");
+    const editorContainer = document.querySelector(".editor-container");
     const previewFrame = document.getElementById("preview");
 
     // Close full-screen preview if open
@@ -591,7 +595,7 @@ function toggleFullscreenPreview() {
 
 // Helper function to toggle full-screen editor
 function toggleFullscreenEditor() {
-  const editorContainer = document.getElementById("editorContainer");
+  const editorContainer = document.querySelector(".editor-container");
   const previewFrame = document.getElementById("preview");
   if (isEditorFullscreen) {
     editorContainer.style.flex = "1";
