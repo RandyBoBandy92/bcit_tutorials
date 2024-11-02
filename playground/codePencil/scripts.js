@@ -433,6 +433,7 @@ document
           cssEditor.setValue(data.css);
           jsEditor.setValue(data.js);
           updatePreview();
+          updateFullscreenPreview(); // Update full-screen preview
         })
         .catch((error) => console.error("Error loading template:", error));
     }
@@ -545,6 +546,7 @@ document
         cssEditor.setValue(data.css);
         jsEditor.setValue(data.js);
         updatePreview();
+        updateFullscreenPreview(); // Update full-screen preview
       });
   });
 
@@ -615,3 +617,23 @@ function deleteVersion() {
 document
   .getElementById("deleteVersionButton")
   .addEventListener("click", deleteVersion);
+
+// Function to update the full-screen preview
+function updateFullscreenPreview() {
+  const fullscreenFrame = document.getElementById("fullscreenPreview");
+  const htmlContent = htmlEditor.getValue();
+  const cssContent = `<style>${cssEditor.getValue()}</style>`;
+  const jsContent = jsEditor.getValue();
+
+  const previewDocument =
+    fullscreenFrame.contentDocument || fullscreenFrame.contentWindow.document;
+  previewDocument.open();
+  previewDocument.write(htmlContent + cssContent);
+  previewDocument.close();
+
+  try {
+    fullscreenFrame.contentWindow.eval(jsContent);
+  } catch (error) {
+    console.error("Error executing JavaScript in fullscreen:", error);
+  }
+}
