@@ -1,4 +1,4 @@
-const templates = ["codePencil.json", "flex.json"];
+const templates = ["codePencil.json", "flex.json", "workshopCards.json"];
 
 // Initialize CodeMirror editors
 const htmlEditor = CodeMirror.fromTextArea(
