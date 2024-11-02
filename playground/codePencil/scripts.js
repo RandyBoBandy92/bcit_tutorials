@@ -462,6 +462,17 @@ document
           cssEditor.setValue(fileContent);
         } else if (file.type === "application/javascript") {
           jsEditor.setValue(fileContent);
+        } else if (file.type === "application/json") {
+          try {
+            const jsonData = JSON.parse(fileContent);
+            if (jsonData.html) htmlEditor.setValue(jsonData.html);
+            if (jsonData.css) cssEditor.setValue(jsonData.css);
+            if (jsonData.js) jsEditor.setValue(jsonData.js);
+            updatePreview();
+          } catch (error) {
+            console.error("Error parsing JSON file:", error);
+            alert("Invalid JSON file.");
+          }
         }
         updatePreview();
       };
