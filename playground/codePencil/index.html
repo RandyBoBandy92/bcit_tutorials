@@ -48,6 +48,10 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/lint/lint.min.css"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/display/fullscreen.min.css"
+    />
   </head>
   <body>
     <div class="tab-nav">
@@ -58,7 +62,12 @@
     </div>
     <div class="editor-container">
       <div class="editor-wrapper" id="htmlWrapper">
-        <div class="editor-label">HTML</div>
+        <div class="editor-label">
+          HTML
+          <button class="fullscreen-toggle" data-editor="htmlEditor">
+            <i class="fas fa-expand"></i> Fullscreen
+          </button>
+        </div>
         <div class="editor-content">
           <textarea
             id="htmlEditor"
@@ -68,13 +77,23 @@
         </div>
       </div>
       <div class="editor-wrapper" id="cssWrapper">
-        <div class="editor-label">CSS</div>
+        <div class="editor-label">
+          CSS
+          <button class="fullscreen-toggle" data-editor="cssEditor">
+            <i class="fas fa-expand"></i> Fullscreen
+          </button>
+        </div>
         <div class="editor-content">
           <textarea id="cssEditor" class="editor" placeholder="CSS"></textarea>
         </div>
       </div>
       <div class="editor-wrapper" id="jsWrapper">
-        <div class="editor-label">JavaScript</div>
+        <div class="editor-label">
+          JavaScript
+          <button class="fullscreen-toggle" data-editor="jsEditor">
+            <i class="fas fa-expand"></i> Fullscreen
+          </button>
+        </div>
         <div class="editor-content">
           <textarea
             id="jsEditor"
@@ -222,6 +241,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/edit/matchtags.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/edit/trailingspace.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/display/autorefresh.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/display/fullscreen.min.js"></script>
     <script src="scripts.js"></script>
   </body>
 </html>

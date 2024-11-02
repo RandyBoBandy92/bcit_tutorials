@@ -32,6 +32,12 @@ body {
   color: #f8f8f2;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.editor-label button {
+  flex: unset;
 }
 .editor-content {
   display: flex;
@@ -58,7 +64,7 @@ body {
   position: fixed;
   bottom: 60px;
   right: 10px;
-  z-index: 1000;
+  z-index: 5;
   display: none;
   flex-direction: column;
   background-color: #282a36;

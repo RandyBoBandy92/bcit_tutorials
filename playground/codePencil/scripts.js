@@ -45,6 +45,12 @@ const htmlEditor = CodeMirror.fromTextArea(
       "Ctrl-Space": "autocomplete",
       "Ctrl-/": "toggleComment",
       "Cmd-/": "toggleComment",
+      F11: function (cm) {
+        cm.setOption("fullScreen", !cm.getOption("fullScreen"));
+      },
+      Esc: function (cm) {
+        if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+      },
     },
     gutters: ["CodeMirror-lint-markers"],
     lint: true, // Enable linting
@@ -67,6 +73,12 @@ const cssEditor = CodeMirror.fromTextArea(
       "Ctrl-Space": "autocomplete",
       "Ctrl-/": "toggleComment",
       "Cmd-/": "toggleComment",
+      F11: function (cm) {
+        cm.setOption("fullScreen", !cm.getOption("fullScreen"));
+      },
+      Esc: function (cm) {
+        if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+      },
     },
     gutters: ["CodeMirror-lint-markers"],
     lint: true, // Enable linting
@@ -86,6 +98,12 @@ const jsEditor = CodeMirror.fromTextArea(document.getElementById("jsEditor"), {
     "Ctrl-Space": "autocomplete",
     "Ctrl-/": "toggleComment",
     "Cmd-/": "toggleComment",
+    F11: function (cm) {
+      cm.setOption("fullScreen", !cm.getOption("fullScreen"));
+    },
+    Esc: function (cm) {
+      if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+    },
   },
   gutters: ["CodeMirror-lint-markers"],
   lint: {
@@ -822,3 +840,30 @@ window.addEventListener("resize", function () {
   }
   // if we go below, lets make HTML the active tab
 });
+
+// Add these individual fullscreen toggle functions
+function toggleHtmlFullscreen() {
+  const isFullscreen = htmlEditor.getOption("fullScreen");
+  htmlEditor.setOption("fullScreen", !isFullscreen);
+}
+
+function toggleCssFullscreen() {
+  const isFullscreen = cssEditor.getOption("fullScreen");
+  cssEditor.setOption("fullScreen", !isFullscreen);
+}
+
+function toggleJsFullscreen() {
+  const isFullscreen = jsEditor.getOption("fullScreen");
+  jsEditor.setOption("fullScreen", !isFullscreen);
+}
+
+// Update the event listeners
+document
+  .querySelector('[data-editor="htmlEditor"]')
+  .addEventListener("click", toggleHtmlFullscreen);
+document
+  .querySelector('[data-editor="cssEditor"]')
+  .addEventListener("click", toggleCssFullscreen);
+document
+  .querySelector('[data-editor="jsEditor"]')
+  .addEventListener("click", toggleJsFullscreen);
