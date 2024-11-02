@@ -654,6 +654,11 @@ function populateVersionSelect() {
 document
   .getElementById("loadCodePencilTemplateButton")
   .addEventListener("click", function () {
+    const saveWarning = confirm(
+      "Loading the Help template will overwrite your current code."
+    );
+    if (!saveWarning) return; // Exit if the user chooses to save their work
+
     fetch(`./templates/codePencil.json`)
       .then((response) => response.json())
       .then((data) => {
@@ -662,7 +667,8 @@ document
         jsEditor.setValue(data.js);
         updatePreview();
         updateFullscreenPreview(); // Update full-screen preview
-      });
+      })
+      .catch((error) => console.error("Error loading Help template:", error));
   });
 
 // Function to load a selected version
