@@ -11,7 +11,11 @@ const htmlEditor = CodeMirror.fromTextArea(
     lineWrapping: true,
     matchBrackets: true,
     autoCloseBrackets: true,
-    extraKeys: { "Ctrl-Space": "autocomplete" },
+    extraKeys: {
+      "Ctrl-Space": "autocomplete",
+      "Ctrl-/": "toggleComment",
+      "Cmd-/": "toggleComment",
+    },
     gutters: ["CodeMirror-lint-markers"],
     lint: true, // Enable linting
   }
@@ -27,7 +31,11 @@ const cssEditor = CodeMirror.fromTextArea(
     lineWrapping: true,
     matchBrackets: true,
     autoCloseBrackets: true,
-    extraKeys: { "Ctrl-Space": "autocomplete" },
+    extraKeys: {
+      "Ctrl-Space": "autocomplete",
+      "Ctrl-/": "toggleComment",
+      "Cmd-/": "toggleComment",
+    },
     gutters: ["CodeMirror-lint-markers"],
     lint: true, // Enable linting
   }
@@ -40,7 +48,11 @@ const jsEditor = CodeMirror.fromTextArea(document.getElementById("jsEditor"), {
   lineWrapping: true,
   matchBrackets: true,
   autoCloseBrackets: true,
-  extraKeys: { "Ctrl-Space": "autocomplete" },
+  extraKeys: {
+    "Ctrl-Space": "autocomplete",
+    "Ctrl-/": "toggleComment",
+    "Cmd-/": "toggleComment",
+  },
   gutters: ["CodeMirror-lint-markers"],
   lint: {
     esversion: 6, // Set ES6 as the JavaScript version
