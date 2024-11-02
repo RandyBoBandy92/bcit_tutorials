@@ -128,7 +128,6 @@ function updatePreview() {
   }
 
   // Save editor state to localStorage on every preview update
-  console.log("Saving HTML, CSS, JS to localStorage");
   localStorage.setItem("htmlContent", htmlEditor.getValue());
   localStorage.setItem("cssContent", cssEditor.getValue());
   localStorage.setItem("jsContent", jsEditor.getValue());
@@ -519,6 +518,10 @@ document
       editorContainer.style.maxHeight = "90vh";
       previewFrame.style.display = "none";
       isEditorFullscreen = true;
+      // make all the editors refresh
+      htmlEditor.refresh();
+      cssEditor.refresh();
+      jsEditor.refresh();
       // this.textContent = "Exit Full-Screen Editor";
     } else {
       editorContainer.style.flex = "1";
