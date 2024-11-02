@@ -313,17 +313,19 @@ document.addEventListener("keydown", function (event) {
   }
 });
 
-// Function to encode content into a URL-friendly format
+// Function to encode content using LZ-String
 function encodeContent(content) {
-  return encodeURIComponent(btoa(content));
+  return encodeURIComponent(LZString.compressToEncodedURIComponent(content));
 }
 
-// Function to decode content from a URL-friendly format
+// Function to decode content using LZ-String
 function decodeContent(encodedContent) {
-  return atob(decodeURIComponent(encodedContent));
+  return LZString.decompressFromEncodedURIComponent(
+    decodeURIComponent(encodedContent)
+  );
 }
 
-// Function to update the URL with encoded content
+// Function to update the URL with encoded content and shorten it using TinyURL
 function updateShareUrl() {
   const htmlContent = encodeContent(htmlEditor.getValue());
   const cssContent = encodeContent(cssEditor.getValue());
@@ -334,8 +336,37 @@ function updateShareUrl() {
   url.searchParams.set("css", cssContent);
   url.searchParams.set("js", jsContent);
 
-  window.history.replaceState({}, "", url);
-  alert("URL updated! You can now share this link.");
+  const longUrl = url.toString();
+
+  // Use TinyURL's API to shorten the URL
+  fetch(`https://tinyurl.com/api-create.php?url=${encodeURIComponent(longUrl)}`)
+    .then((response) => {
+      debugger;
+      if (!response.ok) {
+        throw new Error("Failed to shorten URL");
+      }
+      return response.text();
+    })
+    .then((shortUrl) => {
+      const toast = document.createElement("div");
+      toast.id = "toast";
+      toast.textContent = `URL copied to clipboard! You can now share this link: ${shortUrl}`;
+      toast.style.position = "fixed";
+      toast.style.top = "10px";
+      toast.style.left = "50%";
+      toast.style.transform = "translateX(-50%)";
+      toast.style.backgroundColor = "black";
+      toast.style.color = "white";
+      toast.style.padding = "10px";
+      toast.style.borderRadius = "5px";
+      document.body.appendChild(toast);
+      setTimeout(() => {
+        toast.style.display = "none";
+      }, 3000);
+
+      navigator.clipboard.writeText(shortUrl);
+    })
+    .catch((error) => console.error("Error updating share URL:", error));
 }
 
 // Add event listener to the "Share URL" button
