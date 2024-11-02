@@ -233,6 +233,11 @@ document
     const cssContent = `<style>${cssEditor.getValue()}</style>`;
     const jsContent = jsEditor.getValue();
 
+    // Close full-screen editor if open
+    if (isEditorFullscreen) {
+      toggleFullscreenEditor();
+    }
+
     if (!isFullscreen) {
       const previewDocument =
         fullscreenFrame.contentDocument ||
@@ -489,20 +494,48 @@ document
     const editorContainer = document.getElementById("editorContainer");
     const previewFrame = document.getElementById("preview");
 
+    // Close full-screen preview if open
+    if (isFullscreen) {
+      toggleFullscreenPreview();
+    }
+
     if (!isEditorFullscreen) {
       editorContainer.style.flex = "1 1 100%";
       editorContainer.style.maxHeight = "90vh";
       previewFrame.style.display = "none";
       isEditorFullscreen = true;
-      this.textContent = "Exit Full-Screen Editor";
+      // this.textContent = "Exit Full-Screen Editor";
     } else {
       editorContainer.style.flex = "1";
       editorContainer.style.maxHeight = "300px";
       previewFrame.style.display = "block";
       isEditorFullscreen = false;
-      this.textContent = "Full-Screen Editor";
     }
   });
+
+// Helper function to toggle full-screen preview
+function toggleFullscreenPreview() {
+  const fullscreenFrame = document.getElementById("fullscreenPreview");
+  fullscreenFrame.style.display = isFullscreen ? "none" : "block";
+  isFullscreen = !isFullscreen;
+}
+
+// Helper function to toggle full-screen editor
+function toggleFullscreenEditor() {
+  const editorContainer = document.getElementById("editorContainer");
+  const previewFrame = document.getElementById("preview");
+  if (isEditorFullscreen) {
+    editorContainer.style.flex = "1";
+    editorContainer.style.maxHeight = "300px";
+    previewFrame.style.display = "block";
+    isEditorFullscreen = false;
+  } else {
+    editorContainer.style.flex = "1 1 100%";
+    editorContainer.style.maxHeight = "90vh";
+    previewFrame.style.display = "none";
+    isEditorFullscreen = true;
+  }
+}
 
 // Function to save the current state as a new version
 function saveVersion() {
