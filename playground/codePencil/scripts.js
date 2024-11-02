@@ -1,13 +1,27 @@
-const templates = [
-  { name: "Code Pencil", file: "codePencil.json" },
-  { name: "Flex", file: "flex.json" },
-  { name: "Workshop Cards", file: "workshopCards.json" },
-  { name: "Workshop Intervals", file: "workshopIntervals.json" },
-  { name: "Workshop Promises", file: "workshopPromises.json" },
-  { name: "Resume", file: "resume.json" },
-  { name: "Bouncing Emojis", file: "bouncingEmojis.json" },
-  { name: "Simple Function Practice", file: "simpleFunctionPractice.json" },
-];
+const templateGroups = {
+  "Workshop Templates": [
+    { name: "Workshop Cards", file: "workshopCards.json" },
+    { name: "Workshop Intervals", file: "workshopIntervals.json" },
+    { name: "Workshop Promises", file: "workshopPromises.json" },
+  ],
+  "General Templates": [
+    { name: "Code Pencil", file: "codePencil.json" },
+    { name: "Flex", file: "flex.json" },
+    { name: "Resume", file: "resume.json" },
+    { name: "Bouncing Emojis", file: "bouncingEmojis.json" },
+  ],
+  "Practice Templates": [
+    { name: "Simple Function Practice", file: "simpleFunctionPractice.json" },
+    {
+      name: "Intermediate Function Practice Strings",
+      file: "intermediateFunctionPracticeStrings.json",
+    },
+    {
+      name: "Intermediate Function Practice Arrays",
+      file: "intermediateFunctionPracticeArrays.json",
+    },
+  ],
+};
 
 // Initialize CodeMirror editors
 const htmlEditor = CodeMirror.fromTextArea(
@@ -453,12 +467,19 @@ document
     templateSelect.innerHTML =
       '<option value="" disabled selected>Select a template</option>'; // Clear existing options
 
-    templates.forEach((template) => {
-      const option = document.createElement("option");
-      option.value = template.file;
-      option.textContent = template.name;
-      templateSelect.appendChild(option);
-    });
+    for (const [groupName, templates] of Object.entries(templateGroups)) {
+      const optgroup = document.createElement("optgroup");
+      optgroup.label = groupName;
+
+      templates.forEach((template) => {
+        const option = document.createElement("option");
+        option.value = template.file; // Use the file property for the value
+        option.textContent = template.name; // Use the name property for display
+        optgroup.appendChild(option);
+      });
+
+      templateSelect.appendChild(optgroup);
+    }
 
     modal.style.display = "block";
   });
