@@ -496,7 +496,7 @@ document
           htmlEditor.setValue(fileContent);
         } else if (file.type === "text/css") {
           cssEditor.setValue(fileContent);
-        } else if (file.type === "application/javascript") {
+        } else if (file.type === "text/javascript") {
           jsEditor.setValue(fileContent);
         } else if (file.type === "application/json") {
           try {
