@@ -55,17 +55,23 @@ body {
   margin-bottom: 5rem !important;
 }
 .button-container {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  position: fixed;
+  bottom: 60px;
+  right: 10px;
   z-index: 1000;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 5px;
-  padding: 10px;
+  display: none;
+  flex-direction: column;
   background-color: #282a36;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  padding: 10px;
+  gap: 10px;
+  transition: transform 0.3s ease-in-out;
+  transform: translateY(100%);
+}
+.button-container.open {
+  display: flex;
+  transform: translateY(0);
 }
 button {
   padding: 10px;
@@ -162,4 +168,51 @@ button:hover {
 * {
   scrollbar-width: thin;
   scrollbar-color: #6272a4 #44475a;
+}
+
+/* Styles for the hamburger menu */
+.hamburger-menu {
+  display: none;
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  z-index: 1002;
+  background-color: #44475a;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.hamburger-menu i {
+  color: #f8f8f2;
+  font-size: 24px;
+}
+
+@media (max-width: 900px) {
+  .hamburger-menu {
+    display: flex;
+  }
+}
+
+/* // min width 768px */
+@media (min-width: 900px) {
+  .button-container {
+    display: flex;
+    flex-direction: row;
+    position: absolute;
+    flex-wrap: wrap;
+    justify-content: center;
+    bottom: 10px;
+    left: 0;
+    right: 0;
+    width: 100%;
+    transform: translateY(0);
+  }
+  /* .button-group {
+    display: flex;
+    flex-direction: row;
+  } */
 }

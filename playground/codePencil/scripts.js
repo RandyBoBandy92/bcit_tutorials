@@ -712,3 +712,9 @@ function updateFullscreenPreview() {
     console.error("Error executing JavaScript in fullscreen:", error);
   }
 }
+
+// Toggle button container visibility on hamburger menu click
+document.getElementById("hamburgerMenu").addEventListener("click", function () {
+  const buttonContainer = document.querySelector(".button-container");
+  buttonContainer.classList.toggle("open");
+});
