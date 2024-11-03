@@ -236,15 +236,15 @@ button:hover {
     display: flex;
     justify-content: space-around;
     background-color: #44475a;
-    padding: 10px;
-    margin-left: 20px;
+    /* padding: 10px; */
+    /* margin-left: 20px; */
   }
 
   .tab-nav button {
     background-color: #6272a4;
     color: #f8f8f2;
     border: none;
-    padding: 10px;
+    padding: 5px 0;
     cursor: pointer;
   }
 
@@ -254,7 +254,7 @@ button:hover {
 
   .editor-container {
     display: block;
-    width: 97vw;
+    width: 93vw;
   }
 
   .editor-wrapper,
@@ -266,6 +266,7 @@ button:hover {
   #preview.active {
     display: block;
     height: 90vh;
+    width: 93vw;
   }
 
   .editor-content {

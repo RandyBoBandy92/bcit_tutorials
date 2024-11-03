@@ -821,14 +821,17 @@ function switchTab(activeId) {
 
   document.getElementById(activeId).classList.add("active");
 
+  document.getElementById(activeId).style.width = "100%";
   // if we are switching to preview, we need to display none the editor-container
   if (activeId === "preview") {
     document.querySelector(".editor-container").style.display = "none";
+    // the preview width should be 91vw
+    document.getElementById("preview").style.width = "91vw";
   } else {
     document.querySelector(".editor-container").style.display = "block";
+    // remove the inline style from the preview
+    document.getElementById("preview").style.width = "";
   }
-
-  document.getElementById(activeId).style.width = "100%";
 
   // refresh all editors
   htmlEditor.refresh();
@@ -842,6 +845,8 @@ function switchTab(activeId) {
 window.addEventListener("resize", function () {
   if (window.innerWidth > 768) {
     document.querySelector(".editor-container").style.display = "flex";
+    // remove the inline style from the preview
+    document.getElementById("preview").style.width = "";
   }
   // if we go below, lets make HTML the active tab
 });
