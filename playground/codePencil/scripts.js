@@ -7,7 +7,8 @@ const templateGroups = {
   "General Templates": [
     { name: "Code Pencil", file: "codePencil.json" },
     { name: "Flex", file: "flex.json" },
-    { name: "Resume", file: "resume.json" },
+    { name: "Resume Builder", file: "resume.json" },
+    { name: "Rubric Builder", file: "rubricBuilder.json" },
     { name: "Bouncing Emojis", file: "bouncingEmojis.json" },
   ],
   "Practice Templates": [
