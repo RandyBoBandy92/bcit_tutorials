@@ -175,20 +175,24 @@ function updatePreview() {
 
   const htmlContent = htmlEditor.getValue();
   const cssContent = `<style>${cssEditor.getValue()}</style>`;
-  const jsContent = jsEditor.getValue();
+  const jsContent = `<script>${jsEditor.getValue()}<\/script>`; // Wrap JS content in a script tag
 
   const previewFrame = document.getElementById("preview");
-  const previewDocument =
-    previewFrame.contentDocument || previewFrame.contentWindow.document;
-  previewDocument.open();
-  previewDocument.write(htmlContent + cssContent);
-  previewDocument.close();
 
-  try {
-    previewFrame.contentWindow.eval(jsContent);
-  } catch (error) {
-    console.error("Error executing JavaScript:", error);
-  }
+  // Create a new iframe to ensure a clean slate
+  const newFrame = document.createElement("iframe");
+  newFrame.id = "preview";
+  newFrame.style.width = "100%";
+  newFrame.style.height = "100%";
+
+  // Replace the old iframe with the new one
+  previewFrame.parentNode.replaceChild(newFrame, previewFrame);
+
+  const previewDocument =
+    newFrame.contentDocument || newFrame.contentWindow.document;
+  previewDocument.open();
+  previewDocument.write(htmlContent + cssContent + jsContent); // Append JS content
+  previewDocument.close();
 
   // Save editor state to localStorage on every preview update
   localStorage.setItem("htmlContent", htmlEditor.getValue());
