@@ -364,6 +364,139 @@ function updateSpacedRepetition(progress, quality) {
   return progress;
 }
 
+/**
+ * Exports the entire IndexedDB database to a JSON file.
+ * @param {IDBDatabase} db - The database instance.
+ */
+async function exportDatabaseToJSON(db) {
+  const exportData = {};
+
+  // Get all object store names
+  const objectStoreNames = Array.from(db.objectStoreNames);
+
+  for (const storeName of objectStoreNames) {
+    exportData[storeName] = await getAllDataFromStore(db, storeName);
+  }
+
+  // Convert the export data to a JSON string
+  const jsonString = JSON.stringify(exportData, null, 2);
+
+  // Create a Blob from the JSON string
+  const blob = new Blob([jsonString], { type: "application/json" });
+
+  // Create a link element
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "database_export.json";
+
+  // Append the link to the body
+  document.body.appendChild(link);
+
+  // Trigger the download
+  link.click();
+
+  // Remove the link from the document
+  document.body.removeChild(link);
+}
+
+/**
+ * Retrieves all data from a specific object store.
+ * @param {IDBDatabase} db - The database instance.
+ * @param {string} storeName - The name of the object store.
+ * @returns {Promise<Array>} A promise that resolves to an array of all records in the store.
+ */
+function getAllDataFromStore(db, storeName) {
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction([storeName], "readonly");
+    const store = transaction.objectStore(storeName);
+    const request = store.getAll();
+
+    request.onsuccess = function (event) {
+      resolve(event.target.result);
+    };
+
+    request.onerror = function (event) {
+      reject("Error retrieving data from store: " + event.target.errorCode);
+    };
+  });
+}
+
+/**
+ * Imports data from a JSON file into the IndexedDB database.
+ * @param {IDBDatabase} db - The database instance.
+ * @param {File} file - The JSON file to import.
+ */
+async function importDatabaseFromJSON(db, file) {
+  try {
+    const fileContent = await readFileAsText(file);
+    const importData = JSON.parse(fileContent);
+
+    for (const storeName in importData) {
+      if (importData.hasOwnProperty(storeName)) {
+        const dataArray = importData[storeName];
+        await overwriteStoreData(db, storeName, dataArray);
+      }
+    }
+
+    console.log("Database import completed successfully.");
+  } catch (error) {
+    console.error("Error importing database: ", error);
+  }
+}
+
+/**
+ * Reads a file as text.
+ * @param {File} file - The file to read.
+ * @returns {Promise<string>} A promise that resolves to the file content as a string.
+ */
+function readFileAsText(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = function (event) {
+      resolve(event.target.result);
+    };
+    reader.onerror = function (event) {
+      reject("Error reading file: " + event.target.errorCode);
+    };
+    reader.readAsText(file);
+  });
+}
+
+/**
+ * Overwrites data in a specific object store.
+ * @param {IDBDatabase} db - The database instance.
+ * @param {string} storeName - The name of the object store.
+ * @param {Array} dataArray - The array of data to overwrite in the store.
+ * @returns {Promise<void>} A promise that resolves when the data is overwritten.
+ */
+function overwriteStoreData(db, storeName, dataArray) {
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction([storeName], "readwrite");
+    const store = transaction.objectStore(storeName);
+
+    transaction.oncomplete = function () {
+      resolve();
+    };
+
+    transaction.onerror = function (event) {
+      reject("Transaction error: " + event.target.errorCode);
+    };
+
+    // Clear existing data
+    const clearRequest = store.clear();
+    clearRequest.onsuccess = function () {
+      // Add new data
+      dataArray.forEach((item) => {
+        store.put(item);
+      });
+    };
+
+    clearRequest.onerror = function (event) {
+      reject("Error clearing store: " + event.target.errorCode);
+    };
+  });
+}
+
 async function main() {
   return openDatabase()
     .then((db) => {
