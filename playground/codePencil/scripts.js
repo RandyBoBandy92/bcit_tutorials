@@ -985,12 +985,18 @@ function precomputeNextReviewDates(progress) {
     good: 5,
   };
 
-  const nextReviewTimes = {};
+  const nextReviewTimes = {
+    formatted: {},
+    raw: {},
+  };
 
   for (const [key, quality] of Object.entries(qualities)) {
     const simulatedProgress = { ...progress };
     const updatedProgress = updateSpacedRepetition(simulatedProgress, quality);
-    nextReviewTimes[key] = formatNextReviewDate(updatedProgress.nextReview);
+    nextReviewTimes.formatted[key] = formatNextReviewDate(
+      updatedProgress.nextReview
+    );
+    nextReviewTimes.raw[key] = updatedProgress.nextReview;
   }
 
   return nextReviewTimes;
@@ -1030,9 +1036,9 @@ function openPracticeModal(templateToReview, userProgress) {
         <button class="close-btn">X</button>
       </div>
       <div class="practice-modal-body">
-        <button class="rating-btn hard">Hard (Next: ${nextReviewTimes.hard})</button>
-        <button class="rating-btn ok">OK (Next: ${nextReviewTimes.ok})</button>
-        <button class="rating-btn good">Good (Next: ${nextReviewTimes.good})</button>
+        <button data-next-review=${nextReviewTimes.raw.hard} class="rating-btn hard">Hard (Next: ${nextReviewTimes.formatted.hard})</button>
+        <button data-next-review=${nextReviewTimes.raw.ok} class="rating-btn ok">OK (Next: ${nextReviewTimes.formatted.ok})</button>
+        <button data-next-review=${nextReviewTimes.raw.good} class="rating-btn good">Good (Next: ${nextReviewTimes.formatted.good})</button>
       </div>
     </div>
   `;
