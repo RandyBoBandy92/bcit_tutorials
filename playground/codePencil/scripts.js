@@ -291,6 +291,11 @@ window.addEventListener("load", () => {
     toggleVimMode(jsEditor);
     document.getElementById("toggleVimButton").textContent = "Disable VIM Mode";
   }
+
+  // if we are under 768px, make preview the active tab
+  if (window.innerWidth < 768) {
+    handlePreviewTabClick();
+  }
 });
 
 // Responsive preview testing
@@ -803,7 +808,7 @@ document.getElementById("jsTab").addEventListener("click", function () {
   switchTab("jsWrapper");
 });
 
-document.getElementById("previewTab").addEventListener("click", function () {
+function handlePreviewTabClick() {
   // remove the active class from all the tabs
   const tabs = ["htmlTab", "cssTab", "jsTab", "previewTab"];
   tabs.forEach((id) => {
@@ -811,7 +816,11 @@ document.getElementById("previewTab").addEventListener("click", function () {
   });
   document.getElementById("previewTab").classList.add("active");
   switchTab("preview");
-});
+}
+
+document
+  .getElementById("previewTab")
+  .addEventListener("click", handlePreviewTabClick);
 
 function switchTab(activeId) {
   const tabs = ["htmlWrapper", "cssWrapper", "jsWrapper", "preview"];
@@ -837,8 +846,6 @@ function switchTab(activeId) {
   htmlEditor.refresh();
   cssEditor.refresh();
   jsEditor.refresh();
-
-  document.querySelector(`#${activeId}Tab`).classList.add("active");
 }
 
 // watch the viewport, if it is above 768px. we need to set .editor-container to flex
@@ -847,8 +854,10 @@ window.addEventListener("resize", function () {
     document.querySelector(".editor-container").style.display = "flex";
     // remove the inline style from the preview
     document.getElementById("preview").style.width = "";
+  } else {
+    // if we go below, lets make preview the active tab
+    handlePreviewTabClick();
   }
-  // if we go below, lets make HTML the active tab
 });
 
 // Add these individual fullscreen toggle functions
