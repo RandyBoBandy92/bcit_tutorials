@@ -1043,6 +1043,34 @@ document
 
     document.body.appendChild(practiceModal);
 
+    // Make the modal draggable
+    let isDragging = false;
+    let offsetX, offsetY;
+
+    const header = practiceModal.querySelector(".practice-modal-header");
+    header.style.cursor = "move";
+
+    practiceModal.addEventListener("mousedown", (e) => {
+      isDragging = true;
+      offsetX = e.clientX - practiceModal.offsetLeft;
+      offsetY = e.clientY - practiceModal.offsetTop;
+      document.addEventListener("mousemove", onMouseMove);
+      document.addEventListener("mouseup", onMouseUp);
+    });
+
+    function onMouseMove(e) {
+      if (isDragging) {
+        practiceModal.style.left = `${e.clientX - offsetX}px`;
+        practiceModal.style.top = `${e.clientY - offsetY}px`;
+      }
+    }
+
+    function onMouseUp() {
+      isDragging = false;
+      document.removeEventListener("mousemove", onMouseMove);
+      document.removeEventListener("mouseup", onMouseUp);
+    }
+
     // Add event listeners for modal controls
     const minimizeBtn = practiceModal.querySelector(".minimize-btn");
     const closeBtn = practiceModal.querySelector(".close-btn");
