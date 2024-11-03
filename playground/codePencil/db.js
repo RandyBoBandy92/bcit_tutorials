@@ -20,7 +20,7 @@
 
 /**
  * @typedef {Object} Template
- * @property {number} id - Unique identifier for the template.
+ * @property {number} [id] - Unique identifier for the template.
  * @property {string} title - Title of the template.
  * @property {string} path - Path to the template JSON file.
  * @property {string[]} tags - Tags for categorization.
@@ -28,7 +28,7 @@
 
 /**
  * @typedef {Object} UserProgress
- * @property {number} id - Unique identifier for the user progress entry.
+ * @property {number} [id] - Unique identifier for the user progress entry.
  * @property {number} templateId - Foreign key referencing the template.
  * @property {string} lastReviewed - ISO string of the last review date.
  * @property {string} nextReview - ISO string of the next review date.
@@ -364,14 +364,28 @@ function updateSpacedRepetition(progress, quality) {
   return progress;
 }
 
+async function main() {
+  return openDatabase()
+    .then((db) => {
+      return db;
+    })
+    .catch((error) => {
+      console.error("Error opening database: ", error);
+    });
+}
+
+let db;
+
+main().then((database) => {
+  db = database;
+});
+
 // Testing the functions
 
 /**
  * Example function to test database operations.
  */
 async function practicingUsingTheDB() {
-  debugger;
-  const db = await openDatabase();
   const templateId = await addTemplate(db, {
     title: "Sample Template",
     path: "/path/to/template.json",
@@ -383,7 +397,6 @@ async function practicingUsingTheDB() {
  * Example function to view all templates.
  */
 async function viewAllTemplates() {
-  const db = await openDatabase();
   const templates = await getAllTemplates(db);
   console.log(templates);
 }
