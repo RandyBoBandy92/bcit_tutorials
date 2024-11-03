@@ -188,6 +188,8 @@ function updatePreview() {
   // Replace the old iframe with the new one
   previewFrame.parentNode.replaceChild(newFrame, previewFrame);
 
+  // reactivate the iframe so it shows up on mobile
+  newFrame.style.display = "block";
   const previewDocument =
     newFrame.contentDocument || newFrame.contentWindow.document;
   previewDocument.open();
@@ -333,20 +335,9 @@ document
     }
 
     if (!isFullscreen) {
-      const previewDocument =
-        fullscreenFrame.contentDocument ||
-        fullscreenFrame.contentWindow.document;
-      previewDocument.open();
-      previewDocument.write(htmlContent + cssContent);
-      previewDocument.close();
-
-      try {
-        fullscreenFrame.contentWindow.eval(jsContent);
-      } catch (error) {
-        console.error("Error executing JavaScript in fullscreen:", error);
-      }
-
-      fullscreenFrame.style.display = "block";
+      updateFullscreenPreview();
+      const newFullscreenFrame = document.getElementById("fullscreenPreview");
+      newFullscreenFrame.style.display = "block";
       isFullscreen = true;
     } else {
       fullscreenFrame.style.display = "none";
@@ -766,22 +757,25 @@ document
 
 // Function to update the full-screen preview
 function updateFullscreenPreview() {
-  const fullscreenFrame = document.getElementById("fullscreenPreview");
   const htmlContent = htmlEditor.getValue();
   const cssContent = `<style>${cssEditor.getValue()}</style>`;
-  const jsContent = jsEditor.getValue();
+  const jsContent = `<script>${jsEditor.getValue()}<\/script>`; // Wrap JS content in a script tag
+
+  const fullscreenFrame = document.getElementById("fullscreenPreview");
+
+  // Create a new iframe to ensure a clean slate
+  const newFullscreenFrame = document.createElement("iframe");
+  newFullscreenFrame.id = "fullscreenPreview";
+
+  // Replace the old iframe with the new one
+  fullscreenFrame.parentNode.replaceChild(newFullscreenFrame, fullscreenFrame);
 
   const previewDocument =
-    fullscreenFrame.contentDocument || fullscreenFrame.contentWindow.document;
+    newFullscreenFrame.contentDocument ||
+    newFullscreenFrame.contentWindow.document;
   previewDocument.open();
-  previewDocument.write(htmlContent + cssContent);
+  previewDocument.write(htmlContent + cssContent + jsContent); // Append JS content
   previewDocument.close();
-
-  try {
-    fullscreenFrame.contentWindow.eval(jsContent);
-  } catch (error) {
-    console.error("Error executing JavaScript in fullscreen:", error);
-  }
 }
 
 // Toggle button container visibility on hamburger menu click
