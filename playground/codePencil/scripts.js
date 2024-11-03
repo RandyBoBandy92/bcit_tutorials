@@ -229,33 +229,57 @@ function saveFile(filename, content, mimeType) {
 
 // Load saved state from localStorage
 window.addEventListener("load", () => {
-  if (
-    !localStorage.getItem("htmlContent") &&
-    !localStorage.getItem("cssContent") &&
-    !localStorage.getItem("jsContent")
-  ) {
-    // Load the "Help" codePencil template if local storage is empty
-    fetch(`./templates/codePencil.json`)
-      .then((response) => response.json())
-      .then((data) => {
-        htmlEditor.setValue(data.html);
-        cssEditor.setValue(data.css);
-        jsEditor.setValue(data.js);
-        updatePreview();
-        updateFullscreenPreview(); // Update full-screen preview
-      })
-      .catch((error) => console.error("Error loading Help template:", error));
+  const urlParams = new URLSearchParams(window.location.search);
+  const hasUrlParams =
+    urlParams.has("html") || urlParams.has("css") || urlParams.has("js");
+
+  if (hasUrlParams) {
+    // Load content from URL parameters if present
+    if (urlParams.has("html")) {
+      htmlEditor.setValue(decodeContent(urlParams.get("html")));
+    }
+    if (urlParams.has("css")) {
+      cssEditor.setValue(decodeContent(urlParams.get("css")));
+    }
+    if (urlParams.has("js")) {
+      jsEditor.setValue(decodeContent(urlParams.get("js")));
+    }
+
+    // Remove URL parameters without refreshing
+    if (window.history.replaceState) {
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
   } else {
-    if (localStorage.getItem("htmlContent")) {
-      htmlEditor.setValue(localStorage.getItem("htmlContent"));
-    }
-    if (localStorage.getItem("cssContent")) {
-      cssEditor.setValue(localStorage.getItem("cssContent"));
-    }
-    if (localStorage.getItem("jsContent")) {
-      jsEditor.setValue(localStorage.getItem("jsContent"));
+    // Check localStorage if no URL params
+    if (
+      !localStorage.getItem("htmlContent") &&
+      !localStorage.getItem("cssContent") &&
+      !localStorage.getItem("jsContent")
+    ) {
+      // Load the "Help" codePencil template if local storage is empty
+      fetch(`./templates/codePencil.json`)
+        .then((response) => response.json())
+        .then((data) => {
+          htmlEditor.setValue(data.html);
+          cssEditor.setValue(data.css);
+          jsEditor.setValue(data.js);
+          updatePreview();
+          updateFullscreenPreview(); // Update full-screen preview
+        })
+        .catch((error) => console.error("Error loading Help template:", error));
+    } else {
+      if (localStorage.getItem("htmlContent")) {
+        htmlEditor.setValue(localStorage.getItem("htmlContent"));
+      }
+      if (localStorage.getItem("cssContent")) {
+        cssEditor.setValue(localStorage.getItem("cssContent"));
+      }
+      if (localStorage.getItem("jsContent")) {
+        jsEditor.setValue(localStorage.getItem("jsContent"));
+      }
     }
   }
+
   isLoaded = true;
   updatePreview();
 
@@ -266,22 +290,6 @@ window.addEventListener("load", () => {
     toggleVimMode(cssEditor);
     toggleVimMode(jsEditor);
     document.getElementById("toggleVimButton").textContent = "Disable VIM Mode";
-  }
-
-  const urlParams = new URLSearchParams(window.location.search);
-  if (urlParams.has("html")) {
-    htmlEditor.setValue(decodeContent(urlParams.get("html")));
-  }
-  if (urlParams.has("css")) {
-    cssEditor.setValue(decodeContent(urlParams.get("css")));
-  }
-  if (urlParams.has("js")) {
-    jsEditor.setValue(decodeContent(urlParams.get("js")));
-  }
-
-  // Remove URL parameters without refreshing
-  if (window.history.replaceState) {
-    window.history.replaceState({}, document.title, window.location.pathname);
   }
 });
 
