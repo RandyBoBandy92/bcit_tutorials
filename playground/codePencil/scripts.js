@@ -28,6 +28,10 @@ const templateGroups = {
       name: "Intermediate Function Objects",
       file: "intermediateFunctionObjects.json",
     },
+    {
+      name: "Simple DOM Manipulation",
+      file: "simpleDomManipulation.json",
+    },
   ],
 };
 
