@@ -24,6 +24,10 @@ const templateGroups = {
       name: "Intermediate Function Quiz",
       file: "intermediateFunctionQuiz.json",
     },
+    {
+      name: "Intermediate Function Objects",
+      file: "intermediateFunctionObjects.json",
+    },
   ],
 };
 
