@@ -980,27 +980,125 @@ function findNextTemplateToReview(templates, progress) {
   return templatesNeedingReview[0] || null;
 }
 
+function formatNextReviewDate(date) {
+  // Convert date string to Date object if needed
+  const reviewDate = date instanceof Date ? date : new Date(date);
+  const now = new Date();
+  const diffTime = reviewDate - now;
+  const diffMinutes = Math.ceil(diffTime / (1000 * 60));
+
+  if (diffMinutes < 60) {
+    return `in ${diffMinutes} minutes`;
+  } else if (diffMinutes < 1440) {
+    const hours = Math.ceil(diffMinutes / 60);
+    return `in ${hours} hours`;
+  } else {
+    const days = Math.ceil(diffMinutes / 1440);
+    if (days === 1) {
+      return "tomorrow";
+    }
+    return `in ${days} days`;
+  }
+}
+
+// Function to precompute next review dates for each quality rating
+function precomputeNextReviewDates(progress) {
+  const qualities = {
+    hard: 1,
+    ok: 3,
+    good: 5,
+  };
+
+  const nextReviewTimes = {};
+
+  for (const [key, quality] of Object.entries(qualities)) {
+    const simulatedProgress = { ...progress };
+    const updatedProgress = updateSpacedRepetition(simulatedProgress, quality);
+    nextReviewTimes[key] = formatNextReviewDate(updatedProgress.nextReview);
+  }
+
+  return nextReviewTimes;
+}
+
+// Function to open the practice modal and display precomputed times
+function openPracticeModal(templateToReview, userProgress) {
+  // Retrieve current progress or create a new one if it doesn't exist
+  let progress = userProgress.find((p) => p.templateId === templateToReview.id);
+
+  if (!progress) {
+    progress = {
+      templateId: templateToReview.id,
+      interval: 1,
+      easeFactor: 2.5,
+      reviewCount: 0,
+      lastReviewed: new Date().toISOString(),
+      nextReview: new Date().toISOString(),
+    };
+  }
+
+  // Precompute next review times
+  const nextReviewTimes = precomputeNextReviewDates(progress);
+  debugger;
+
+  // Create and display the modal
+  const practiceModal = document.createElement("div");
+  practiceModal.className = "practice-modal";
+
+  practiceModal.innerHTML = `
+    <div class="practice-modal-content">
+      <h2>Review: ${templateToReview.title}</h2>
+      <div class="practice-modal-body">
+        <button class="rating-btn hard">Hard (Next: ${nextReviewTimes.hard})</button>
+        <button class="rating-btn ok">OK (Next: ${nextReviewTimes.ok})</button>
+        <button class="rating-btn good">Good (Next: ${nextReviewTimes.good})</button>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(practiceModal);
+
+  // Add event listeners to the buttons
+  const ratingBtns = practiceModal.querySelectorAll(".rating-btn");
+  ratingBtns.forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const quality = btn.classList.contains("good")
+        ? 5
+        : btn.classList.contains("ok")
+        ? 3
+        : 1; // Assuming "hard" corresponds to a quality of 1
+
+      // Update progress using the updateSpacedRepetition function
+      const updatedProgress = updateSpacedRepetition(progress, quality);
+
+      // Update progress in the database
+      await updateUserProgress(db, updatedProgress);
+
+      // Show next button
+      const nextBtn = document.createElement("button");
+      nextBtn.textContent = "Next";
+      nextBtn.className = "next-btn";
+      nextBtn.addEventListener("click", () => {
+        practiceModal.remove();
+        // Trigger practice button click to load next template
+        document.getElementById("practiceButton").click();
+      });
+
+      const modalBody = practiceModal.querySelector(".practice-modal-body");
+      modalBody.innerHTML = "";
+      modalBody.appendChild(nextBtn);
+    });
+  });
+}
+
 document
   .getElementById("practiceButton")
   .addEventListener("click", async () => {
-    debugger;
     const db = await openDatabase();
     await updateTemplatesInDb();
     const allTemplates = await getAllTemplates(db);
     const userProgress = await getAllUserProgress(db);
     console.log(allTemplates);
     console.log(userProgress);
-
-    // now we need to start the practice session
-
-    // ok, that's all the planning for now, let's start coding
-
-    // 1. find the first template that the user has not completed
-    // we start by finding the first template that the user has not completed if any
-    // if there are no templates that the user has not completed, we show a message to the user
-    // that they have completed all the templates and they can go back to the home page
-    // this could be either a template the user has no progress for, or one where the review date has passed
-    // we need to find the first one of those and load it
 
     const templateToReview = findNextTemplateToReview(
       allTemplates,
@@ -1014,7 +1112,6 @@ document
     }
     console.log("Template to review:", templateToReview);
 
-    // we need to fetch and load the template
     fetch(templateToReview.path)
       .then((response) => response.json())
       .then((data) => {
@@ -1025,113 +1122,6 @@ document
         updateFullscreenPreview();
       });
 
-    // Create and show practice modal
-    const practiceModal = document.createElement("div");
-    practiceModal.className = "practice-modal";
-    practiceModal.innerHTML = `
-    <div class="practice-modal-header">
-      <h2>${templateToReview.title}</h2>
-      <button class="minimize-btn">_</button>
-      <button class="close-btn">×</button>
-    </div>
-      <div class="practice-modal-content">
-        <div class="practice-modal-body">
-          <div class="rating-buttons">
-          <button class="rating-btn hard">Hard</button>
-          <button class="rating-btn ok">OK</button>
-            <button class="rating-btn good">Good</button>
-          </div>
-        </div>
-      </div>
-    `;
-
-    document.body.appendChild(practiceModal);
-
-    // Make the modal draggable
-    let isDragging = false;
-    let offsetX, offsetY;
-
-    const header = practiceModal.querySelector(".practice-modal-header");
-    header.style.cursor = "move";
-
-    practiceModal.addEventListener("mousedown", (e) => {
-      isDragging = true;
-      offsetX = e.clientX - practiceModal.offsetLeft;
-      offsetY = e.clientY - practiceModal.offsetTop;
-      document.addEventListener("mousemove", onMouseMove);
-      document.addEventListener("mouseup", onMouseUp);
-    });
-
-    function onMouseMove(e) {
-      if (isDragging) {
-        practiceModal.style.left = `${e.clientX - offsetX}px`;
-        practiceModal.style.top = `${e.clientY - offsetY}px`;
-      }
-    }
-
-    function onMouseUp() {
-      isDragging = false;
-      document.removeEventListener("mousemove", onMouseMove);
-      document.removeEventListener("mouseup", onMouseUp);
-    }
-
-    // Add event listeners for modal controls
-    const minimizeBtn = practiceModal.querySelector(".minimize-btn");
-    const closeBtn = practiceModal.querySelector(".close-btn");
-    const ratingBtns = practiceModal.querySelectorAll(".rating-btn");
-
-    minimizeBtn.addEventListener("click", () => {
-      practiceModal.classList.toggle("minimized");
-    });
-
-    closeBtn.addEventListener("click", () => {
-      practiceModal.remove();
-    });
-
-    // Handle rating button clicks
-    ratingBtns.forEach((btn) => {
-      btn.addEventListener("click", async () => {
-        const quality = btn.classList.contains("good")
-          ? 5
-          : btn.classList.contains("ok")
-          ? 3
-          : 1; // Assuming "hard" corresponds to a quality of 1
-
-        // Retrieve current progress or create a new one if it doesn't exist
-        let progress = userProgress.find(
-          (p) => p.templateId === templateToReview.id
-        );
-
-        if (!progress) {
-          progress = {
-            templateId: templateToReview.id,
-            interval: 1,
-            easeFactor: 2.5,
-            reviewCount: 0,
-            lastReviewed: new Date().toISOString(),
-            nextReview: new Date().toISOString(),
-          };
-        }
-
-        // Update progress using the updateSpacedRepetition function
-        const updatedProgress = updateSpacedRepetition(progress, quality);
-
-        // Update progress in the database
-        await updateUserProgress(db, updatedProgress);
-
-        // Show next button
-        const nextBtn = document.createElement("button");
-        nextBtn.textContent = "Next";
-        nextBtn.className = "next-btn";
-        nextBtn.addEventListener("click", () => {
-          practiceModal.remove();
-          // Trigger practice button click to load next template
-          document.getElementById("practiceButton").click();
-        });
-
-        const modalBody = practiceModal.querySelector(".practice-modal-body");
-        modalBody.innerHTML = "";
-        modalBody.appendChild(nextBtn);
-      });
-    });
+    // Pass userProgress to openPracticeModal
+    openPracticeModal(templateToReview, userProgress);
   });
