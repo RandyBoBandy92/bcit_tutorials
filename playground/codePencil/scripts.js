@@ -927,3 +927,195 @@ document
 document
   .querySelector('[data-editor="jsEditor"]')
   .addEventListener("click", toggleJsFullscreen);
+
+async function updateTemplatesInDb() {
+  try {
+    const db = await openDatabase();
+    const allTemplates = await getAllTemplates(db);
+    const practiceTemplates = templateGroups["Practice Templates"];
+
+    const existingTemplatePaths = allTemplates.map((template) => template.path);
+
+    for (const practiceTemplate of practiceTemplates) {
+      const templatePath = `./templates/${practiceTemplate.file}`;
+      if (!existingTemplatePaths.includes(templatePath)) {
+        const newTemplate = {
+          title: practiceTemplate.name,
+          path: templatePath,
+          tags: ["practice"],
+        };
+        await addTemplate(db, newTemplate);
+        console.log(
+          `Template "${practiceTemplate.name}" added to the database.`
+        );
+      }
+    }
+  } catch (error) {
+    console.error("Error processing practice templates:", error);
+  }
+}
+
+function findNextTemplateToReview(templates, progress) {
+  // Find templates that need review
+  const templatesNeedingReview = templates.filter((template) => {
+    // Check if there's any progress for this template
+    const templateProgress = progress.find((p) => p.templateId === template.id);
+
+    if (!templateProgress) {
+      // No progress means this template needs review
+      return true;
+    }
+
+    // Check if next review date has passed
+    const nextReviewDate = new Date(templateProgress.nextReview);
+    const now = new Date();
+    return nextReviewDate <= now;
+  });
+
+  // Return first template needing review, or null if none found
+  return templatesNeedingReview[0] || null;
+}
+
+document
+  .getElementById("practiceButton")
+  .addEventListener("click", async () => {
+    debugger;
+    const db = await openDatabase();
+    await updateTemplatesInDb();
+    const allTemplates = await getAllTemplates(db);
+    const userProgress = await getAllUserProgress(db);
+    console.log(allTemplates);
+    console.log(userProgress);
+
+    // now we need to start the practice session
+
+    // ok, that's all the planning for now, let's start coding
+
+    // 1. find the first template that the user has not completed
+    // we start by finding the first template that the user has not completed if any
+    // if there are no templates that the user has not completed, we show a message to the user
+    // that they have completed all the templates and they can go back to the home page
+    // this could be either a template the user has no progress for, or one where the review date has passed
+    // we need to find the first one of those and load it
+
+    const templateToReview = findNextTemplateToReview(
+      allTemplates,
+      userProgress
+    );
+    if (!templateToReview) {
+      alert(
+        "You have completed all available templates! Check back later for more reviews."
+      );
+      return;
+    }
+    console.log("Template to review:", templateToReview);
+
+    // we need to fetch and load the template
+    fetch(templateToReview.path)
+      .then((response) => response.json())
+      .then((data) => {
+        htmlEditor.setValue(data.html);
+        cssEditor.setValue(data.css);
+        jsEditor.setValue(data.js);
+        updatePreview();
+        updateFullscreenPreview();
+      });
+
+    // Create and show practice modal
+    const practiceModal = document.createElement("div");
+    practiceModal.className = "practice-modal";
+    practiceModal.innerHTML = `
+    <div class="practice-modal-header">
+      <h2>${templateToReview.title}</h2>
+      <button class="minimize-btn">_</button>
+      <button class="close-btn">×</button>
+    </div>
+      <div class="practice-modal-content">
+        <div class="practice-modal-body">
+          <div class="rating-buttons">
+            <button class="rating-btn good">Good</button>
+            <button class="rating-btn ok">OK</button>
+            <button class="rating-btn hard">Hard</button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(practiceModal);
+
+    // Add event listeners for modal controls
+    const minimizeBtn = practiceModal.querySelector(".minimize-btn");
+    const closeBtn = practiceModal.querySelector(".close-btn");
+    const ratingBtns = practiceModal.querySelectorAll(".rating-btn");
+
+    minimizeBtn.addEventListener("click", () => {
+      practiceModal.classList.toggle("minimized");
+    });
+
+    closeBtn.addEventListener("click", () => {
+      practiceModal.remove();
+    });
+
+    // Handle rating button clicks
+    ratingBtns.forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        const rating = btn.classList.contains("good")
+          ? "good"
+          : btn.classList.contains("ok")
+          ? "ok"
+          : "hard";
+
+        // Calculate new interval and ease factor based on rating
+        const progress = userProgress.find(
+          (p) => p.templateId === templateToReview.id
+        ) || {
+          templateId: templateToReview.id,
+          interval: 1,
+          easeFactor: 2.5,
+          reviewCount: 0,
+        };
+
+        let newInterval, newEaseFactor;
+
+        if (rating === "good") {
+          newInterval = progress.interval * progress.easeFactor;
+          newEaseFactor = progress.easeFactor + 0.1;
+        } else if (rating === "ok") {
+          newInterval = progress.interval;
+          newEaseFactor = progress.easeFactor;
+        } else {
+          // hard
+          newInterval = Math.max(1, progress.interval * 0.5);
+          newEaseFactor = Math.max(1.3, progress.easeFactor - 0.2);
+        }
+
+        // Update progress in database
+        const updatedProgress = {
+          ...progress,
+          lastReviewed: new Date().toISOString(),
+          nextReview: new Date(
+            Date.now() + newInterval * 24 * 60 * 60 * 1000
+          ).toISOString(),
+          interval: newInterval,
+          easeFactor: newEaseFactor,
+          reviewCount: progress.reviewCount + 1,
+        };
+
+        await updateUserProgress(db, updatedProgress);
+
+        // Show next button
+        const nextBtn = document.createElement("button");
+        nextBtn.textContent = "Next";
+        nextBtn.className = "next-btn";
+        nextBtn.addEventListener("click", () => {
+          practiceModal.remove();
+          // Trigger practice button click to load next template
+          document.getElementById("practiceButton").click();
+        });
+
+        const modalBody = practiceModal.querySelector(".practice-modal-body");
+        modalBody.innerHTML = "";
+        modalBody.appendChild(nextBtn);
+      });
+    });
+  });

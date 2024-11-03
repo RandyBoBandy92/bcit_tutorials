@@ -278,3 +278,75 @@ button:hover {
     display: none;
   }
 }
+
+.practice-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #f8f8f2;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  z-index: 1001;
+  width: 80%;
+  max-width: 600px;
+  color: black;
+}
+
+.practice-modal-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: black;
+}
+
+.practice-modal-header {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.practice-modal-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.practice-modal-header button {
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+}
+
+.practice-modal-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.rating-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.rating-btn {
+  padding: 10px;
+  background-color: #44475a;
+  color: #f8f8f2;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.rating-btn:hover {
+  background-color: #6272a4;
+}
+
+.minimize-btn {
+  margin-right: 10px;
+}
+
+.minimized .practice-modal-content {
+  display: none;
+}
