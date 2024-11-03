@@ -352,14 +352,22 @@ function updateSpacedRepetition(progress, quality) {
     }
   }
 
+  // Special case for quality of 1: next review in 5 minutes
+  if (quality === 1) {
+    const currentDate = new Date();
+    progress.nextReview = new Date(
+      currentDate.getTime() + 5 * 60 * 1000 // 5 minutes from now
+    ).toISOString();
+  } else {
+    // Calculate next review date
+    const currentDate = new Date();
+    progress.nextReview = new Date(
+      currentDate.setDate(currentDate.getDate() + progress.interval)
+    ).toISOString();
+  }
+
   // Update review count
   progress.reviewCount += 1;
-
-  // Calculate next review date
-  const currentDate = new Date();
-  progress.nextReview = new Date(
-    currentDate.setDate(currentDate.getDate() + progress.interval)
-  ).toISOString();
 
   return progress;
 }
@@ -533,5 +541,4 @@ async function viewAllTemplates() {
   const templates = await getAllTemplates(db);
   console.log(templates);
 }
-
 // End of Testing the functions

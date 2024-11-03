@@ -1033,9 +1033,9 @@ document
       <div class="practice-modal-content">
         <div class="practice-modal-body">
           <div class="rating-buttons">
+          <button class="rating-btn hard">Hard</button>
+          <button class="rating-btn ok">OK</button>
             <button class="rating-btn good">Good</button>
-            <button class="rating-btn ok">OK</button>
-            <button class="rating-btn hard">Hard</button>
           </div>
         </div>
       </div>
@@ -1087,48 +1087,32 @@ document
     // Handle rating button clicks
     ratingBtns.forEach((btn) => {
       btn.addEventListener("click", async () => {
-        const rating = btn.classList.contains("good")
-          ? "good"
+        const quality = btn.classList.contains("good")
+          ? 5
           : btn.classList.contains("ok")
-          ? "ok"
-          : "hard";
+          ? 3
+          : 1; // Assuming "hard" corresponds to a quality of 1
 
-        // Calculate new interval and ease factor based on rating
-        const progress = userProgress.find(
+        // Retrieve current progress or create a new one if it doesn't exist
+        let progress = userProgress.find(
           (p) => p.templateId === templateToReview.id
-        ) || {
-          templateId: templateToReview.id,
-          interval: 1,
-          easeFactor: 2.5,
-          reviewCount: 0,
-        };
+        );
 
-        let newInterval, newEaseFactor;
-
-        if (rating === "good") {
-          newInterval = progress.interval * progress.easeFactor;
-          newEaseFactor = progress.easeFactor + 0.1;
-        } else if (rating === "ok") {
-          newInterval = progress.interval;
-          newEaseFactor = progress.easeFactor;
-        } else {
-          // hard
-          newInterval = Math.max(1, progress.interval * 0.5);
-          newEaseFactor = Math.max(1.3, progress.easeFactor - 0.2);
+        if (!progress) {
+          progress = {
+            templateId: templateToReview.id,
+            interval: 1,
+            easeFactor: 2.5,
+            reviewCount: 0,
+            lastReviewed: new Date().toISOString(),
+            nextReview: new Date().toISOString(),
+          };
         }
 
-        // Update progress in database
-        const updatedProgress = {
-          ...progress,
-          lastReviewed: new Date().toISOString(),
-          nextReview: new Date(
-            Date.now() + newInterval * 24 * 60 * 60 * 1000
-          ).toISOString(),
-          interval: newInterval,
-          easeFactor: newEaseFactor,
-          reviewCount: progress.reviewCount + 1,
-        };
+        // Update progress using the updateSpacedRepetition function
+        const updatedProgress = updateSpacedRepetition(progress, quality);
 
+        // Update progress in the database
         await updateUserProgress(db, updatedProgress);
 
         // Show next button
