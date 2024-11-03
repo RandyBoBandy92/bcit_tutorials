@@ -59,6 +59,9 @@ body {
   overflow: auto;
   background-color: #f8f8f2;
   margin-bottom: 5rem !important;
+  width: 100%;
+  height: 100vh;
+  display: none;
 }
 .button-container {
   position: fixed;
@@ -104,17 +107,6 @@ button:hover {
 #preview {
   height: 200px;
   margin: 5px;
-}
-#fullscreenPreview {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 91%;
-  border: none;
-  z-index: 1000;
-  background-color: #f8f8f2;
-  display: none;
 }
 .slider-container {
   display: flex;

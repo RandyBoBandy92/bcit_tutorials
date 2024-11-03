@@ -278,7 +278,6 @@ window.addEventListener("load", () => {
           cssEditor.setValue(data.css);
           jsEditor.setValue(data.js);
           updatePreview();
-          updateFullscreenPreview(); // Update full-screen preview
         })
         .catch((error) => console.error("Error loading Help template:", error));
     } else {
@@ -324,23 +323,15 @@ let isFullscreen = false;
 document
   .getElementById("fullscreenButton")
   .addEventListener("click", function () {
-    const fullscreenFrame = document.getElementById("fullscreenPreview");
-    const htmlContent = htmlEditor.getValue();
-    const cssContent = `<style>${cssEditor.getValue()}</style>`;
-    const jsContent = jsEditor.getValue();
-
-    // Close full-screen editor if open
-    if (isEditorFullscreen) {
-      toggleFullscreenEditor();
-    }
+    const editorContainer = document.querySelector(".editor-container");
+    const preview = document.getElementById("preview");
 
     if (!isFullscreen) {
-      updateFullscreenPreview();
-      const newFullscreenFrame = document.getElementById("fullscreenPreview");
-      newFullscreenFrame.style.display = "block";
+      editorContainer.style.display = "none";
+      preview.style.display = "block";
       isFullscreen = true;
     } else {
-      fullscreenFrame.style.display = "none";
+      editorContainer.style.display = "flex";
       isFullscreen = false;
     }
   });
@@ -532,7 +523,6 @@ document
           cssEditor.setValue(data.css);
           jsEditor.setValue(data.js);
           updatePreview();
-          updateFullscreenPreview(); // Update full-screen preview
         })
         .catch((error) => console.error("Error loading template:", error));
     }
@@ -613,9 +603,17 @@ document
 
 // Helper function to toggle full-screen preview
 function toggleFullscreenPreview() {
-  const fullscreenFrame = document.getElementById("fullscreenPreview");
-  fullscreenFrame.style.display = isFullscreen ? "none" : "block";
-  isFullscreen = !isFullscreen;
+  const editorContainer = document.querySelector(".editor-container");
+  const preview = document.getElementById("preview");
+
+  if (!isFullscreen) {
+    editorContainer.style.display = "none";
+    preview.style.display = "block";
+    isFullscreen = true;
+  } else {
+    editorContainer.style.display = "flex";
+    isFullscreen = false;
+  }
 }
 
 // Helper function to toggle full-screen editor
@@ -682,7 +680,6 @@ document
         cssEditor.setValue(data.css);
         jsEditor.setValue(data.js);
         updatePreview();
-        updateFullscreenPreview(); // Update full-screen preview
       })
       .catch((error) => console.error("Error loading Help template:", error));
   });
@@ -754,29 +751,6 @@ function deleteVersion() {
 document
   .getElementById("deleteVersionButton")
   .addEventListener("click", deleteVersion);
-
-// Function to update the full-screen preview
-function updateFullscreenPreview() {
-  const htmlContent = htmlEditor.getValue();
-  const cssContent = `<style>${cssEditor.getValue()}</style>`;
-  const jsContent = `<script>${jsEditor.getValue()}<\/script>`; // Wrap JS content in a script tag
-
-  const fullscreenFrame = document.getElementById("fullscreenPreview");
-
-  // Create a new iframe to ensure a clean slate
-  const newFullscreenFrame = document.createElement("iframe");
-  newFullscreenFrame.id = "fullscreenPreview";
-
-  // Replace the old iframe with the new one
-  fullscreenFrame.parentNode.replaceChild(newFullscreenFrame, fullscreenFrame);
-
-  const previewDocument =
-    newFullscreenFrame.contentDocument ||
-    newFullscreenFrame.contentWindow.document;
-  previewDocument.open();
-  previewDocument.write(htmlContent + cssContent + jsContent); // Append JS content
-  previewDocument.close();
-}
 
 // Toggle button container visibility on hamburger menu click
 document.getElementById("hamburgerMenu").addEventListener("click", function () {
@@ -1172,7 +1146,6 @@ document
         cssEditor.setValue(data.css);
         jsEditor.setValue(data.js);
         updatePreview();
-        updateFullscreenPreview();
       });
 
     // Pass userProgress to openPracticeModal
