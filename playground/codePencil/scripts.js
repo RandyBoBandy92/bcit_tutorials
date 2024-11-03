@@ -1038,15 +1038,21 @@ function openPracticeModal(templateToReview, userProgress) {
 
   // Precompute next review times
   const nextReviewTimes = precomputeNextReviewDates(progress);
-  debugger;
 
   // Create and display the modal
   const practiceModal = document.createElement("div");
   practiceModal.className = "practice-modal";
+  practiceModal.style.position = "absolute"; // Ensure the modal is positioned absolutely
+  practiceModal.style.top = "50px"; // Initial position
+  practiceModal.style.left = "50px"; // Initial position
 
   practiceModal.innerHTML = `
     <div class="practice-modal-content">
-      <h2>Review: ${templateToReview.title}</h2>
+      <div class="practice-modal-header" style="cursor: move;">
+        <h2>Review: ${templateToReview.title}</h2>
+        <button class="minimize-btn">_</button>
+        <button class="close-btn">X</button>
+      </div>
       <div class="practice-modal-body">
         <button class="rating-btn hard">Hard (Next: ${nextReviewTimes.hard})</button>
         <button class="rating-btn ok">OK (Next: ${nextReviewTimes.ok})</button>
@@ -1056,6 +1062,37 @@ function openPracticeModal(templateToReview, userProgress) {
   `;
 
   document.body.appendChild(practiceModal);
+
+  // Make modal draggable
+  const modalHeader = practiceModal.querySelector(".practice-modal-header");
+
+  let isDragging = false;
+  let startX, startY, initialX, initialY;
+
+  modalHeader.addEventListener("mousedown", (e) => {
+    isDragging = true;
+    startX = e.clientX;
+    startY = e.clientY;
+    initialX = practiceModal.offsetLeft;
+    initialY = practiceModal.offsetTop;
+    document.addEventListener("mousemove", drag);
+    document.addEventListener("mouseup", stopDrag);
+  });
+
+  function drag(e) {
+    if (isDragging) {
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
+      practiceModal.style.left = `${initialX + dx}px`;
+      practiceModal.style.top = `${initialY + dy}px`;
+    }
+  }
+
+  function stopDrag() {
+    isDragging = false;
+    document.removeEventListener("mousemove", drag);
+    document.removeEventListener("mouseup", stopDrag);
+  }
 
   // Add event listeners to the buttons
   const ratingBtns = practiceModal.querySelectorAll(".rating-btn");
@@ -1087,6 +1124,20 @@ function openPracticeModal(templateToReview, userProgress) {
       modalBody.innerHTML = "";
       modalBody.appendChild(nextBtn);
     });
+  });
+
+  // Add minimize and close functionality
+  const minimizeBtn = practiceModal.querySelector(".minimize-btn");
+  const closeBtn = practiceModal.querySelector(".close-btn");
+
+  minimizeBtn.addEventListener("click", () => {
+    const modalBody = practiceModal.querySelector(".practice-modal-body");
+    modalBody.style.display =
+      modalBody.style.display === "none" ? "block" : "none";
+  });
+
+  closeBtn.addEventListener("click", () => {
+    practiceModal.remove();
   });
 }
 
