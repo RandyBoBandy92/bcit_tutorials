@@ -329,7 +329,6 @@ function getUserProgressByTemplateId(db, templateId) {
  * @returns {UserProgress} The updated progress object.
  */
 function updateSpacedRepetition(progress, quality) {
-  // Constants
   const MIN_EASE_FACTOR = 1.3;
 
   // Update ease factor
@@ -345,33 +344,31 @@ function updateSpacedRepetition(progress, quality) {
   } else {
     if (progress.reviewCount === 0) {
       progress.interval = 1;
-    } else if (progress.reviewCount === 1) {
-      progress.interval = 6;
     } else {
       progress.interval = Math.round(progress.interval * progress.easeFactor);
     }
   }
 
-  // Special case for quality of 1: next review in 5 minutes
+  // Special case for quality of 1: reset interval and adjust ease factor
   if (quality === 1) {
-    const currentDate = new Date();
-    progress.nextReview = new Date(
-      currentDate.getTime() + 5 * 60 * 1000 // 5 minutes from now
-    ).toISOString();
-  } else {
-    // Calculate next review date
-    const currentDate = new Date();
-    progress.nextReview = new Date(
-      currentDate.setDate(currentDate.getDate() + progress.interval)
-    ).toISOString();
+    progress.interval = 1; // Reset interval to 1 day
+    progress.easeFactor = Math.max(progress.easeFactor - 0.2, MIN_EASE_FACTOR); // Decrease ease factor
   }
+
+  // Calculate next review date
+  const currentDate = new Date();
+  progress.nextReview = new Date(
+    currentDate.setDate(currentDate.getDate() + progress.interval)
+  ).toISOString();
+
+  // Update the lastReviewed date
+  progress.lastReviewed = new Date().toISOString();
 
   // Update review count
   progress.reviewCount += 1;
 
   return progress;
 }
-
 /**
  * Exports the entire IndexedDB database to a JSON file.
  * @param {IDBDatabase} db - The database instance.
@@ -514,7 +511,6 @@ async function main() {
       console.error("Error opening database: ", error);
     });
 }
-
 let db;
 
 main().then((database) => {
