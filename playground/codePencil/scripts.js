@@ -18,6 +18,10 @@ const templateGroups = {
       file: "intermediateFunctionPracticeStrings.json",
     },
     {
+      name: "Beginner Visibility",
+      file: "beginnerVisibility.json",
+    },
+    {
       name: "Intermediate Function Practice Arrays",
       file: "intermediateFunctionPracticeArrays.json",
     },
