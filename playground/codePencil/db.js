@@ -349,17 +349,22 @@ function updateSpacedRepetition(progress, quality) {
     }
   }
 
-  // Special case for quality of 1: reset interval and adjust ease factor
-  if (quality === 1) {
-    progress.interval = 1; // Reset interval to 1 day
-    progress.easeFactor = Math.max(progress.easeFactor - 0.2, MIN_EASE_FACTOR); // Decrease ease factor
-  }
-
   // Calculate next review date
   const currentDate = new Date();
   progress.nextReview = new Date(
     currentDate.setDate(currentDate.getDate() + progress.interval)
   ).toISOString();
+
+  // Special case for quality of 1: reset interval and adjust ease factor
+  // also nextReview is 5 minutes from now
+  if (quality === 1) {
+    const newCurrentDate = new Date();
+    progress.interval = 1; // Reset interval to 1 day
+    progress.easeFactor = Math.max(progress.easeFactor - 0.2, MIN_EASE_FACTOR); // Decrease ease factor
+    progress.nextReview = new Date(
+      newCurrentDate.setMinutes(newCurrentDate.getMinutes() + 5)
+    ).toISOString();
+  }
 
   // Update the lastReviewed date
   progress.lastReviewed = new Date().toISOString();
