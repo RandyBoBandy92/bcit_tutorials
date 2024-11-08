@@ -1,0 +1,181 @@
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: #f5f6f7;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+.header {
+  background-color: #ffffff;
+  padding: 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 1.5em;
+  font-weight: bold;
+  color: #0070f3;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hero {
+  text-align: center;
+  padding: 100px 20px 0 20px;
+}
+
+.hero h1 {
+  font-size: 3em;
+  margin-bottom: 0.5em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.hero h1 span {
+  color: #0070f3;
+}
+
+.hero h1 img {
+  width: 100px;
+}
+
+.hero p {
+  font-size: 1.2em;
+  color: #555;
+}
+
+.cta-button {
+  display: inline-block;
+  margin-top: 30px;
+  padding: 15px 30px;
+  background-color: #0070f3;
+  color: white;
+  font-size: 1em;
+  border-radius: 5px;
+  text-decoration: none;
+  box-shadow: 0 4px 10px rgba(0, 112, 243, 0.3);
+}
+
+.cta-button:hover {
+  background-color: #005bb5;
+  box-shadow: 0 4px 14px rgba(0, 91, 181, 0.3);
+}
+
+.study-feature.hero-article {
+  padding: 100px 20px;
+  text-align: left;
+  background-color: #f0f4f8;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.study-feature h2 {
+  text-align: center;
+  font-size: 3em;
+  color: #0070f3;
+  margin-bottom: 20px;
+}
+
+.study-feature span {
+  color: #0070f3;
+}
+
+.study-feature p {
+  font-size: 1.2em;
+  color: #555;
+  line-height: 1.6;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.features {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 50px auto;
+  justify-content: center;
+  gap: 40px;
+}
+
+.feature-item {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  max-width: 300px;
+  text-align: center;
+}
+
+.feature-item h3 {
+  color: #0070f3;
+  margin-bottom: 15px;
+}
+
+.feature-item p {
+  color: #555;
+  line-height: 1.5;
+}
+
+.footer {
+  background-color: #ffffff;
+  padding: 20px;
+  text-align: center;
+  margin-top: 50px;
+  color: #777;
+  border-top: 1px solid #eaeaea;
+}
+
+.footer a {
+  text-decoration: none;
+  color: #0070f3;
+}
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+  .hero {
+    padding: 60px 20px;
+  }
+
+  .hero h1 {
+    font-size: 2em;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .hero h1 img {
+    width: 60px;
+  }
+
+  .hero p {
+    font-size: 1em;
+  }
+
+  .features {
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    margin: 20px auto;
+  }
+
+  .feature-item {
+    padding: 15px;
+  }
+
+  .header {
+    padding: 15px;
+  }
+
+  .logo {
+    font-size: 1.2em;
+  }
+
+  .footer {
+    padding: 15px;
+  }
+}
