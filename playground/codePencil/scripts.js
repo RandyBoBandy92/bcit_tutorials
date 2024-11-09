@@ -1104,7 +1104,7 @@ function openPracticeModal(templateToReview, userProgress) {
       nextBtn.addEventListener("click", () => {
         practiceModal.remove();
         // Trigger practice button click to load next template
-        document.getElementById("practiceButton").click();
+        startReviewProcess();
       });
 
       const modalBody = practiceModal.querySelector(".practice-modal-body");
@@ -1128,37 +1128,131 @@ function openPracticeModal(templateToReview, userProgress) {
   });
 }
 
+// Function to open the dashboard modal
+let chartId = null;
+async function openDashboardModal() {
+  const dashboardModal = document.getElementById("dashboardModal");
+  dashboardModal.style.display = "block";
+
+  // Fetch review data
+  const reviewData = await getReviewData();
+
+  // Create the chart
+  const ctx = document.getElementById("reviewChart").getContext("2d");
+
+  if (chartId) {
+    chartId.destroy();
+  }
+
+  chartId = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: reviewData.labels,
+      datasets: [
+        {
+          label: "Reviews",
+          data: reviewData.data,
+          backgroundColor: "rgba(98, 114, 164, 0.5)",
+          borderColor: "rgba(98, 114, 164, 1)",
+          borderWidth: 1,
+        },
+      ],
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true,
+        },
+      },
+    },
+  });
+
+  // Add "Study Now" button if it doesn't exist yet
+  let studyNowBtn = dashboardModal.querySelector(".study-now-btn");
+  if (!studyNowBtn) {
+    studyNowBtn = document.createElement("button");
+    studyNowBtn.textContent = "Study Now";
+    studyNowBtn.className = "study-now-btn";
+    studyNowBtn.addEventListener("click", () => {
+      dashboardModal.style.display = "none";
+      startReviewProcess();
+    });
+
+    const modalContent = dashboardModal.querySelector(".modal-content");
+    modalContent.appendChild(studyNowBtn);
+  }
+}
+
+async function startReviewProcess() {
+  // Logic to start the review process
+  const db = await openDatabase();
+  await updateTemplatesInDb();
+  const allTemplates = await getAllTemplates(db);
+  const userProgress = await getAllUserProgress(db);
+
+  const templateToReview = findNextTemplateToReview(allTemplates, userProgress);
+  if (!templateToReview) {
+    alert(
+      "You have completed all available templates! Check back later for more reviews."
+    );
+    return;
+  }
+
+  fetch(templateToReview.path)
+    .then((response) => response.json())
+    .then((data) => {
+      htmlEditor.setValue(data.html);
+      cssEditor.setValue(data.css);
+      jsEditor.setValue(data.js);
+      updatePreview();
+    });
+
+  openPracticeModal(templateToReview, userProgress);
+}
+
+// Function to get review data
+async function getReviewData() {
+  const db = await openDatabase();
+  const userProgress = await getAllUserProgress(db);
+
+  // Create a map to store dates and their review counts
+  const reviewCounts = new Map();
+
+  // Process each progress entry
+  for (const progress of userProgress) {
+    // Store the full Date object and formatted string
+    const dateObj = new Date(progress.nextReview);
+    const dateStr = dateObj.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+    reviewCounts.set(dateStr, {
+      count: (reviewCounts.get(dateStr)?.count || 0) + 1,
+      date: dateObj,
+    });
+  }
+
+  // Convert to arrays and sort by date
+  const sortedEntries = Array.from(reviewCounts.entries()).sort(
+    (a, b) => a[1].date - b[1].date
+  );
+
+  // Extract sorted labels and data
+  const labels = sortedEntries.map((entry) => entry[0]);
+  const data = sortedEntries.map((entry) => entry[1].count);
+
+  return { labels, data };
+}
+
+// Add event listener to the "Practice" button
 document
   .getElementById("practiceButton")
-  .addEventListener("click", async () => {
-    const db = await openDatabase();
-    await updateTemplatesInDb();
-    const allTemplates = await getAllTemplates(db);
-    const userProgress = await getAllUserProgress(db);
-    console.log(allTemplates);
-    console.log(userProgress);
+  .addEventListener("click", openDashboardModal);
 
-    const templateToReview = findNextTemplateToReview(
-      allTemplates,
-      userProgress
-    );
-    if (!templateToReview) {
-      alert(
-        "You have completed all available templates! Check back later for more reviews."
-      );
-      return;
-    }
-    console.log("Template to review:", templateToReview);
-
-    fetch(templateToReview.path)
-      .then((response) => response.json())
-      .then((data) => {
-        htmlEditor.setValue(data.html);
-        cssEditor.setValue(data.css);
-        jsEditor.setValue(data.js);
-        updatePreview();
-      });
-
-    // Pass userProgress to openPracticeModal
-    openPracticeModal(templateToReview, userProgress);
+// Close the dashboard modal
+document
+  .querySelector("#dashboardModal .close-button")
+  .addEventListener("click", function () {
+    document.getElementById("dashboardModal").style.display = "none";
   });
