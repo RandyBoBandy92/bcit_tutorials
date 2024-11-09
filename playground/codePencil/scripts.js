@@ -1215,32 +1215,62 @@ async function getReviewData() {
   const db = await openDatabase();
   const userProgress = await getAllUserProgress(db);
 
-  // Create a map to store dates and their review counts
-  const reviewCounts = new Map();
+  // Initialize counters for each time period
+  const reviewCounts = {
+    today: 0,
+    tomorrow: 0,
+    week: 0,
+    month: 0,
+    beyond: 0,
+  };
+
+  const now = new Date();
+  const tomorrow = new Date(now);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const nextWeek = new Date(now);
+  nextWeek.setDate(nextWeek.getDate() + 7);
+  const nextMonth = new Date(now);
+  nextMonth.setDate(nextMonth.getDate() + 30);
 
   // Process each progress entry
   for (const progress of userProgress) {
-    // Store the full Date object and formatted string
-    const dateObj = new Date(progress.nextReview);
-    const dateStr = dateObj.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-    reviewCounts.set(dateStr, {
-      count: (reviewCounts.get(dateStr)?.count || 0) + 1,
-      date: dateObj,
-    });
+    const reviewDate = new Date(progress.nextReview);
+
+    // Reset hours/minutes/seconds for accurate date comparison
+    reviewDate.setHours(0, 0, 0, 0);
+    const nowDate = new Date(now);
+    nowDate.setHours(0, 0, 0, 0);
+    const tomorrowDate = new Date(tomorrow);
+    tomorrowDate.setHours(0, 0, 0, 0);
+
+    if (reviewDate.getTime() === nowDate.getTime()) {
+      reviewCounts.today++;
+    } else if (reviewDate.getTime() === tomorrowDate.getTime()) {
+      reviewCounts.tomorrow++;
+    } else if (reviewDate <= nextWeek) {
+      reviewCounts.week++;
+    } else if (reviewDate <= nextMonth) {
+      reviewCounts.month++;
+    } else {
+      reviewCounts.beyond++;
+    }
   }
 
-  // Convert to arrays and sort by date
-  const sortedEntries = Array.from(reviewCounts.entries()).sort(
-    (a, b) => a[1].date - b[1].date
-  );
+  const labels = [
+    "Today",
+    "Tomorrow",
+    "Next 7 Days",
+    "Next 30 Days",
+    "30+ Days",
+  ];
 
-  // Extract sorted labels and data
-  const labels = sortedEntries.map((entry) => entry[0]);
-  const data = sortedEntries.map((entry) => entry[1].count);
+  const data = [
+    reviewCounts.today,
+    reviewCounts.tomorrow,
+    reviewCounts.week,
+    reviewCounts.month,
+    reviewCounts.beyond,
+  ];
 
   return { labels, data };
 }
