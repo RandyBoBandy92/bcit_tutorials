@@ -1329,3 +1329,15 @@ function enableUpdatePreview() {
 
 // Initial setup to ensure listeners are added
 enableUpdatePreview();
+
+document
+  .getElementById("templateSearch")
+  .addEventListener("input", function () {
+    const searchValue = this.value.toLowerCase();
+    const options = document.querySelectorAll("#templateSelect option");
+
+    options.forEach((option) => {
+      const text = option.textContent.toLowerCase();
+      option.style.display = text.includes(searchValue) ? "block" : "none";
+    });
+  });
