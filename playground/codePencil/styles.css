@@ -36,6 +36,20 @@ body {
   justify-content: center;
   align-items: center;
 }
+
+.editor-label.js {
+  padding: 10px 10px 6px 10px;
+}
+
+.editor-label.js p {
+  padding: 0 10px;
+  margin-right: 10px;
+}
+
+.editor-label.js button:first-of-type {
+  margin-right: 5px;
+}
+
 .editor-label button {
   flex: unset;
 }

@@ -176,7 +176,7 @@ function debounce(func, delay) {
 const debouncedUpdatePreview = debounce(updatePreview, 500);
 
 function updatePreview() {
-  if (!isLoaded) return; // Do not update preview until content is fully loaded
+  if (!isLoaded || isPaused) return; // Do not update preview until content is fully loaded
 
   const htmlContent = htmlEditor.getValue();
   const cssContent = `<style>${cssEditor.getValue()}</style>`;
@@ -1234,7 +1234,8 @@ async function getReviewData() {
 
   // Process each progress entry
   for (const progress of userProgress) {
-    const reviewDate = new Date(progress.nextReview);
+    // I need this to be in the local time zone.
+    let reviewDate = new Date(progress.nextReview);
 
     // Reset hours/minutes/seconds for accurate date comparison
     reviewDate.setHours(0, 0, 0, 0);
@@ -1286,3 +1287,44 @@ document
   .addEventListener("click", function () {
     document.getElementById("dashboardModal").style.display = "none";
   });
+
+let isPaused = false;
+
+document
+  .getElementById("playPauseButton")
+  .addEventListener("click", function () {
+    isPaused = !isPaused;
+    this.innerHTML = isPaused
+      ? '<i class="fas fa-play"></i> Play'
+      : '<i class="fas fa-pause"></i> Pause';
+
+    if (isPaused) {
+      // Disable the update preview functionality
+      disableUpdatePreview();
+    } else {
+      // Enable the update preview functionality
+      enableUpdatePreview();
+    }
+  });
+
+function disableUpdatePreview() {
+  // Remove the change listeners to stop updating the preview
+  htmlEditor.off("change", debouncedUpdatePreview);
+  cssEditor.off("change", debouncedUpdatePreview);
+  jsEditor.off("change", debouncedUpdatePreview);
+  console.log("debouncedUpdatePreview removed");
+
+  // Clear any pending debounced calls
+  clearTimeout(debounceTimeout);
+}
+
+function enableUpdatePreview() {
+  // Re-add the change listeners to resume updating the preview
+  htmlEditor.on("change", debouncedUpdatePreview);
+  cssEditor.on("change", debouncedUpdatePreview);
+  jsEditor.on("change", debouncedUpdatePreview);
+  updatePreview();
+}
+
+// Initial setup to ensure listeners are added
+enableUpdatePreview();
