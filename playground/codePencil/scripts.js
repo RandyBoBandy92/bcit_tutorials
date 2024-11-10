@@ -12,6 +12,7 @@ const templateGroups = {
     { name: "Bouncing Emojis", file: "bouncingEmojis.json" },
   ],
   "Practice Templates": [
+    { name: "Prompt Practice", file: "promptPractice.json" },
     { name: "Simple Function Practice", file: "simpleFunctionPractice.json" },
     {
       name: "Intermediate Function Practice Strings",
