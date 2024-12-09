@@ -24,6 +24,6 @@ So the steps are:
 
 ### Using the Debugger
 
-![](../assets/images/smaller_debugger.gif)
+![](../assets/images/debugger.gif)
 
 WIP
