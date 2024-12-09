@@ -24,6 +24,6 @@ So the steps are:
 
 ### Using the Debugger
 
-![](../assets/videos/debugger.mp4)
+<video muted controls autoplay src="../assets/videos/debugger.mp4">
 
 WIP
