@@ -26,4 +26,7 @@ So the steps are:
 
 ![](../assets/images/debugger.gif)
 
-WIP
+Here is a breakdown of the main controls you will use:
+![](../assets/images/debugger_controls.excalidraw.png)
+
+Guide Work In Progress
