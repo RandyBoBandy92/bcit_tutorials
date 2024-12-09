@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CodePencil</title>
+    <link rel="icon" href="./favicon.ico" type="image/x-icon" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="./apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="./favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="./favicon-16x16.png"
+    />
+    <link rel="manifest" href="./site.webmanifest" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/hint/show-hint.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/theme/dracula.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/split.js/1.6.0/split.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/lint/lint.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/display/fullscreen.min.css"
+    />
+  </head>
+  <body>
+    <div class="tab-nav">
+      <button id="htmlTab">HTML</button>
+      <button id="cssTab">CSS</button>
+      <button id="jsTab">JavaScript</button>
+      <button id="previewTab">Preview</button>
+    </div>
+    <div class="editor-container">
+      <div class="editor-wrapper" id="htmlWrapper">
+        <div class="editor-label">
+          HTML
+          <button class="fullscreen-toggle" data-editor="htmlEditor">
+            <i class="fas fa-expand"></i> Fullscreen
+          </button>
+        </div>
+        <div class="editor-content">
+          <textarea
+            id="htmlEditor"
+            class="editor"
+            placeholder="HTML"
+          ></textarea>
+        </div>
+      </div>
+      <div class="editor-wrapper" id="cssWrapper">
+        <div class="editor-label">
+          CSS
+          <button class="fullscreen-toggle" data-editor="cssEditor">
+            <i class="fas fa-expand"></i> Fullscreen
+          </button>
+        </div>
+        <div class="editor-content">
+          <textarea id="cssEditor" class="editor" placeholder="CSS"></textarea>
+        </div>
+      </div>
+      <div class="editor-wrapper" id="jsWrapper">
+        <div class="editor-label js">
+          <p>JavaScript</p>
+          <button class="fullscreen-toggle" data-editor="jsEditor">
+            <i class="fas fa-expand"></i> Fullscreen
+          </button>
+          <button class="play-pause-toggle" id="playPauseButton">
+            <i class="fas fa-pause"></i> Pause
+          </button>
+        </div>
+        <div class="editor-content">
+          <textarea
+            id="jsEditor"
+            class="editor"
+            placeholder="JavaScript"
+          ></textarea>
+        </div>
+      </div>
+    </div>
+    <iframe id="preview"></iframe>
+    <div class="button-container">
+      <!-- Group 1: File Actions -->
+      <div class="button-group">
+        <button id="practiceButton">
+          <i class="fas fa-play"></i> Practice
+        </button>
+        <button id="exportJsonButton" title="Export as JSON">
+          <i class="fas fa-file-export"></i> JSON EXPORT
+        </button>
+        <button id="saveButton" title="Save as Files">
+          <i class="fas fa-save"></i> Save
+        </button>
+        <button id="uploadButton" title="Upload Files">
+          <i class="fas fa-upload"></i> Upload
+        </button>
+        <input
+          type="file"
+          id="fileInput"
+          accept=".html,.css,.js"
+          multiple
+          style="display: none"
+        />
+      </div>
+
+      <!-- Group 2: View Actions -->
+      <div class="button-group">
+        <button id="fullscreenButton" title="Full-Screen Preview">
+          <i class="fas fa-expand"></i> Full-Screen Preview
+        </button>
+        <button id="fullscreenEditorButton" title="Full-Screen Editor">
+          <i class="fas fa-code"></i> Full-Screen Editor
+        </button>
+        <button id="resetButton" title="Reset Content">
+          <i class="fas fa-redo"></i> Reset
+        </button>
+      </div>
+
+      <!-- Group 3: Miscellaneous -->
+      <div class="button-group">
+        <button id="shareUrlButton" title="Share URL">
+          <i class="fas fa-share-alt"></i> Share URL
+        </button>
+        <button id="toggleVimButton" title="Toggle VIM Mode">
+          <i class="fas fa-keyboard"></i> Enable VIM Mode
+        </button>
+        <button id="templatesButton" title="Select Template">
+          <i class="fas fa-file-alt"></i> Templates
+        </button>
+        <button id="versionControlButton" title="Version Control">
+          <i class="fas fa-history"></i> Version Control
+        </button>
+        <button
+          id="loadCodePencilTemplateButton"
+          title="Load CodePencil Template"
+        >
+          <i class="fas fa-file-alt"></i> Help
+        </button>
+      </div>
+
+      <!-- Responsive Slider -->
+      <div class="slider-container">
+        <label for="responsiveSlider">Preview Width:</label>
+        <input
+          type="range"
+          id="responsiveSlider"
+          min="30"
+          max="98"
+          step="1"
+          value="98"
+        />
+      </div>
+    </div>
+
+    <div id="templateModal" class="modal" style="display: none">
+      <div class="modal-content">
+        <span class="close-button">&times;</span>
+        <h2>Select a Template</h2>
+        <input
+          type="text"
+          id="templateSearch"
+          placeholder="Search templates..."
+        />
+        <select id="templateSelect">
+          <option value="" disabled selected>Select a template</option>
+        </select>
+        <button id="loadTemplateButton">Load</button>
+      </div>
+    </div>
+
+    <!-- Version Control Modal -->
+    <div id="versionModal" class="modal" style="display: none">
+      <div class="modal-content">
+        <span class="close-button">&times;</span>
+        <h2>Version Control</h2>
+        <button id="saveVersionButton" title="Save Version">
+          <i class="fas fa-save"></i> Save Version
+        </button>
+        <select id="versionSelect" title="Select Version">
+          <option value="" disabled selected>Select a version</option>
+        </select>
+        <button id="loadVersionButton" title="Load Version">
+          <i class="fas fa-folder-open"></i> Load Version
+        </button>
+        <button id="deleteVersionButton" title="Delete Version">
+          <i class="fas fa-trash"></i> Delete Version
+        </button>
+      </div>
+    </div>
+
+    <!-- Hamburger menu icon -->
+    <div class="hamburger-menu" id="hamburgerMenu">
+      <i class="fas fa-bars"></i>
+    </div>
+
+    <div id="dashboardModal" class="modal" style="display: none">
+      <div class="modal-content">
+        <span class="close-button">&times;</span>
+        <h2>Review Dashboard</h2>
+        <canvas id="reviewChart"></canvas>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/emmet-codemirror@1.2.5/dist/emmet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/htmlmixed/htmlmixed.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/xml/xml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/css/css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/hint/show-hint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/hint/css-hint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/hint/javascript-hint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/split.js/1.6.0/split.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/keymap/vim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/lint/lint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/lint/html-lint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/lint/css-lint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/lint/javascript-lint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jshint/2.13.4/jshint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/csslint/1.0.5/csslint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/htmlhint/0.14.2/htmlhint.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lz-string@1.4.4/libs/lz-string.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/search/search.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/search/searchcursor.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/search/match-highlighter.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/comment/comment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/comment/continuecomment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/edit/closebrackets.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/edit/matchbrackets.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/edit/closetag.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/edit/matchtags.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/edit/trailingspace.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/display/autorefresh.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/display/fullscreen.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="db.js"></script>
+    <script src="scripts.js"></script>
+  </body>
+</html>

@@ -42,6 +42,8 @@ export default defineConfig({
 })
 ```
 
+NOTE: Your config file may look slightly different than this, the important parts to add are `base` and `build`.
+
 ## Step 4: Configure Server to Handle Virtual URLs
 Your server needs to be configured to handle "virtual" URLs. These are URLs that do not map to actual files, but are instead handled by your React app.
 
@@ -55,7 +57,7 @@ RewriteRule ^ index.html [QSA,L]
 
 This configuration will redirect all requests to your index.html file, allowing your React app to handle the routing.
 
-Note: The .htaccess file should not be placed in the root directory of your domain, but nested inside the directory of your React project.
+Note: The .htaccess file should not be placed in the root directory of your domain, but nested inside the `public` directory of your React project.
 
 After following these steps, your React application should be ready for deployment!
 
