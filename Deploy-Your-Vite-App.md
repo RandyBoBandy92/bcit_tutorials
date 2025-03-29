@@ -38,7 +38,10 @@ export default defineConfig({
   build: {
     outDir: 'movie-mania'
   },
-  plugins: [reactRefresh()],
+  plugins: [react()],
+  css: {
+    devSourcemap: true,
+  },
 })
 ```
 
